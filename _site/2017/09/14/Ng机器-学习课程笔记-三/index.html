@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>解决JNI相关问题(1)</title>
-    <meta name="description" content="  本篇主要讲述：本篇主要讲述：  生成.h文件的正确姿势  生成和使用.dll文件的正确姿势">
+    <title>Ng机器学习--课程笔记（三）</title>
+    <meta name="description" content="  Linear Regression with multiple variablesLinear Regression with multiple variables上一节讲了单变量的线性回归问题，这一节针对更复杂的情况。">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(1)/">
+    <link rel="canonical" href="http://localhost:4000/2017/09/14/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%89/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -123,11 +123,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>解决JNI相关问题(1)</h1>
+        <h1>Ng机器学习--课程笔记（三）</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2016-09-04
+                <i class="fa fa-calendar"></i>2017-09-14
             </div>
 
             <div class="label-card">
@@ -148,7 +148,9 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#问题解决" title="Category: 问题解决" rel="category">问题解决</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
+    
+        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
     
   
 
@@ -165,11 +167,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a-->
-        <a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a>&nbsp;
-    
-        <!--a href="/tag/#JAVA" title="Tag: JAVA" rel="tag">JAVA</a-->
-        <a href="/tag/#JAVA" title="Tag: JAVA" rel="tag">JAVA</a>
+        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
+        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
     
   
 
@@ -181,69 +180,80 @@
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
         <ul id="markdown-toc">
-  <li><a href="#本篇主要讲述" id="markdown-toc-本篇主要讲述">本篇主要讲述：</a>    <ul>
-      <li><a href="#如何生成h文件" id="markdown-toc-如何生成h文件">如何生成.h文件</a></li>
-      <li><a href="#如何生成和使用dll文件" id="markdown-toc-如何生成和使用dll文件">如何生成和使用.dll文件</a></li>
+  <li><a href="#linear-regression-with-multiple-variables" id="markdown-toc-linear-regression-with-multiple-variables">Linear Regression with multiple variables</a>    <ul>
+      <li><a href="#1multivariate-linear-regression多元线性回归" id="markdown-toc-1multivariate-linear-regression多元线性回归">1.multivariate linear regression（多元线性回归）</a></li>
+      <li><a href="#2gradient-descent" id="markdown-toc-2gradient-descent">2.Gradient Descent</a></li>
+      <li><a href="#3feature-scaling特征缩放" id="markdown-toc-3feature-scaling特征缩放">3.feature scaling（特征缩放）</a></li>
+      <li><a href="#4学习率α" id="markdown-toc-4学习率α">4.学习率α</a></li>
+      <li><a href="#5features-and-polynomial-regression-特征选择与多项式回归" id="markdown-toc-5features-and-polynomial-regression-特征选择与多项式回归">5.features and polynomial regression 特征选择与多项式回归</a></li>
+      <li><a href="#6normal-equation正规方程" id="markdown-toc-6normal-equation正规方程">6.normal equation（正规方程）</a></li>
     </ul>
   </li>
-  <li><a href="#总结" id="markdown-toc-总结">总结</a></li>
 </ul>
 
-<h2 id="本篇主要讲述">本篇主要讲述：</h2>
-<ul>
-  <li>生成.h文件的正确姿势</li>
-  <li>生成和使用.dll文件的正确姿势</li>
-</ul>
+<h1 id="linear-regression-with-multiple-variables">Linear Regression with multiple variables</h1>
+<p>上一节讲了单变量的线性回归问题，这一节针对更复杂的情况。</p>
 
-<blockquote>
-  <p>最近着手的项目用到了JNI，照着文档边学边做，遇到了很多坑，我打算一一写出来，来帮助也遇到JNI相关问题的童鞋。 <br />
-<del>国内资料实在是太渣了，让我绕了好多弯路</del></p>
-</blockquote>
+<h2 id="1multivariate-linear-regression多元线性回归">1.multivariate linear regression（多元线性回归）</h2>
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-1.png" alt="lesson3-1.png" /><br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-2.png" alt="lesson3-2.png" /><br />
+假设函数表示为：$h_θ(x)=θ_0+θ_1x_1+θ_2x_2+θ_3x_3+…+θ_nx_n$<br />
+通产默认x0等于0<br />
+于是<br />
+$x=\begin{bmatrix}
+x_0<br />
+x_1<br />
+…<br />
+x_n
+\end{bmatrix}
+θ=\begin{bmatrix}
+θ_0<br />
+θ_1<br />
+…<br />
+θ_n
+\end{bmatrix}$</p>
 
-<h3 id="如何生成h文件">如何生成.h文件</h3>
-<p>首先编写好Java程序(有关JNI的Java程序写法不详述了)<img src="http://octtw77pk.bkt.clouddn.com/9/4JNI.png" alt="图片" /><br />
-在该文件所在的目录下按<code class="highlighter-rouge">shift+右键</code>,打开命令行，输入<code class="highlighter-rouge">javac your_file_name.java</code>编译成.class文件。</p>
+<p>$h_θ(x)=θ_0x_0+θ_1x_1+θ_2x_2+θ_3x_3+…+θ_nx_n=θ^Tx$</p>
 
-<hr />
+<p>$J(θ)=\frac{1}{2m}\sum_{i=1}^{m}(h_θ(x^{(i)})-y^{(i)})$ <br />
+在进行计算时，善用矩阵运算能够加快运算速度，如损失函数就可以表示为<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-8.png" alt="lesson3-8.png" /><br />
+结果与上式相同。</p>
 
-<p>上面都是小儿科，关键来了，退出到<strong>该Java文件的包的同一级</strong>，为什么意思呢，拿我这个Java文件来说，它有包名<code class="highlighter-rouge">com.jg.model.Image</code>所以应该退出到<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE06.png" alt="图片" />这一级，能看到com包，打开命令行输入<code class="highlighter-rouge">javah your_file_name</code>来生成.h文件，格式为： javah 包名.文件名，这里有两点要提：1.包名一定要写全 2.文件名后没有后缀!参考我这个写法：<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE07.png" alt="图片" /><br />
-前面都操作正确，就能见到这个.h文件了<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE08.png" alt="图片" /></p>
+<h2 id="2gradient-descent">2.Gradient Descent</h2>
+<p>上一节学到了单元线性回归问题的梯度下降算法，如图：<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-11.png" alt="lesson2-11.png" /><br />
+多元回归问题的梯度下降算法与之类似，<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-3.png" alt="lesson3-3.png" /><br />
+可以简写为：<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-4.png" alt="lesson3-4.png" /></p>
 
-<hr />
-<h3 id="如何生成和使用dll文件">如何生成和使用.dll文件</h3>
-<p>之后就是打开C/C++的IDE来编写C/C++程序，这里我使用的是VS2013。<br />
-这里我也遇到了好多问题，我来写一下我的解决方案吧。<br />
-打开VS2013，文件–&gt;新建–&gt;项目–&gt;Win32控制台应用程序（<strong>项目名字要注意，是你在Java程序里写的要加载的库名,即System.loadLibrary(““)里写的库名</strong>）–&gt;确定–&gt;下一步–&gt;<strong>应用程序类型</strong>选择DLL，点上空项目–&gt;完成–&gt;源程序里创建一个cpp开始编写，之后我不着重讲怎么写C程序)(因为很简单)，而是来讲下你们可能会出现的一些问题：</p>
+<h2 id="3feature-scaling特征缩放">3.feature scaling（特征缩放）</h2>
+<p>通过特征缩放能够使得梯度下降算法获得更好的效果，梯度下降的较快，特征缩放没有严格的要求，通常只要在相似的范围内就行。<br />
+如−1 ≤ x(i) ≤ 1或者 −0.5 ≤ x(i) ≤ 0.5。Ng提出他认为−3 ≤ x(i) ≤ 3是一个可接受的范围。<br />
+<strong>mean normalization</strong>均值标准化<br />
+$x_i:=\frac{x_i−μ_i}{s_i}$<br />
+μi表示i特征的平均值<br />
+si表示i特征取值的最大值减去最小值,values(max-min)</p>
 
-<ul>
-  <li><strong>头文件引入问题</strong><br />
-如果头文件引入不当，会出现五花八门的错误，我来讲下我的做法：将上面编译出的.h文件放到和源程序（上一步创建用来编写程序的那个cpp）一起，之后还有两个.h文件，分别是jni.h，位于<code class="highlighter-rouge">%HOME%\Java\jdk1.8.0_71\include</code>, jni-md.h，位于<code class="highlighter-rouge">%HOME%\Java\jdk1.8.0_71\include\win32</code>，把这两也放到和源程序一起，<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE09.png" alt="图片" />然后在VS里点头文件-&gt;添加现有项，将那三个头文件加进去，这时你会发现你自个儿的那个头文件报错了，没事，将<code class="highlighter-rouge">#include &lt;jni.h&gt;</code> 改成 <code class="highlighter-rouge">#include "jni.h"</code>，现在去看看，应该没有报错了~~</li>
-  <li><strong>dll应该放哪儿？</strong><br />
-好不容易生成了.dll，应该放哪儿了呢？它应该被放在两个地方，一个是项目的根目录，一个是eclipse的根目录(我用的是eclipse，intelliJ不清楚)。<del>可能需要把eclipse重启下</del></li>
-  <li><strong>用win32编译问题</strong><br />
-你以为这问题结束了？并没有！由于我们大多使用的是64位的jdk，而VS默认使用的win32的解决方案，所以我们好不容易生成的.dll是不起作用的，不过别怕，只要稍作修改就就能解决~~<br />
-打开VS的配置管理器，修改成如下图所示:<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE11.png" alt="图片" /><img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE12.png" alt="图片" />重新生成一下解决方案，用新生成的dll替换之前的那两个dll（新生成的dll在<code class="highlighter-rouge">/项目根目录/x64/debug</code>中）
-如果出现<code class="highlighter-rouge">error LNK1561: 必须定义入口点</code>,那么这样来：右键项目–&gt;属性–&gt;常规–&gt;配置类型–&gt;动态库(.dll)</li>
-</ul>
+<p><strong>在做实验的时候注意到，在对数据集做特征缩放的时候，需要将μi和si值保存下来。处理新数据时，使用同样的μi和si值进行缩放</strong></p>
+<h2 id="4学习率α">4.学习率α</h2>
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-5.png" alt="lesson3-5.png" />  <br />
+如果代价函数变化趋势如这些图所示，应该采用更小的α取值</p>
 
-<h2 id="总结">总结</h2>
-<p>到这里你应该看到你的JNI跑起来了，尽情去玩耍她吧！！<br />
-<img src="http://octtw77pk.bkt.clouddn.com/%E6%88%AA%E5%9B%BE10.png" alt="图片" /></p>
+<h2 id="5features-and-polynomial-regression-特征选择与多项式回归">5.features and polynomial regression 特征选择与多项式回归</h2>
+<p>假设函数为$h_θ(x)=θ_0+θ_1x_1+θ_2x_2$,<br />
+用该式子去代表$h_θ(x)=θ_0+θ_1(size)+θ_2(size)^2$<br />
+size返回0~1000，于是需要使用特征缩放，使得x1,x2在相同的范围内。</p>
 
-<hr />
+<h2 id="6normal-equation正规方程">6.normal equation（正规方程）</h2>
+<p>相比梯度下降求解θ值的方法，这里介绍第二种方法：normal equation，正规方程法。<br />
+对于数据集<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson3-6.png" alt="lesson3-6.png" /></p>
 
-<p>最后附上我此前没讲的C++程序的写法</p>
-
-<pre><code class="language-C++">#include "com_jg_model_Image_TestJNI.h"
-#include&lt;iostream&gt;
-using namespace std;
-JNIEXPORT void JNICALL Java_com_jg_model_Image_TestJNI_sayHello
-(JNIEnv *, jclass)
-{
-	cout &lt;&lt; "Hello World!";
-}
-</code></pre>
-
+<p>则，通过正则方程，得到θ值：<br />
+$θ=(X^TX)^{-1}X^Ty$<br />
+<strong>证明：待补充</strong><br />
+正则方程法不需要使用特征缩放</p>
 
         </article>
         <hr>
@@ -255,11 +265,124 @@ JNIEXPORT void JNICALL Java_com_jg_model_Image_TestJNI_sayHello
                 
                     
                 
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">Ng机器学习--课程笔记（五）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习--课程笔记（四）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
                     
                 
             
                 
                     
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
                 
                     
                 
@@ -270,100 +393,22 @@ JNIEXPORT void JNICALL Java_com_jg_model_Image_TestJNI_sayHello
                 
                     
                 
-                    
-                
             
         
-            
-            
-                
-                    
-                
-                    
-                
-            
         
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
+            </ul>
         
 
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2016/08/30/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Git学习笔记</a></p>
+        <p><strong>上一篇</strong> <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）</a></p>
         
     </div>
     <div class="nex">
 
         
-        <p><strong>下一篇</strong> <a href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(2)/">解决JNI相关问题(2)</a></p>
+        <p><strong>下一篇</strong> <a href="/2017/10/10/python%E7%88%AC%E8%99%AB-%E4%B8%80/">Python爬虫（一）</a></p>
         
     </div>
 </div>
@@ -387,6 +432,8 @@ JNIEXPORT void JNICALL Java_com_jg_model_Image_TestJNI_sayHello
                     Content
                 </div>
                 <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
                     
                     <li><a href="#comments">Comments</a></li>
                 </ul>

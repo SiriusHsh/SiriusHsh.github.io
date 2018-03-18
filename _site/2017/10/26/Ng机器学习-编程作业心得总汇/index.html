@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习课程笔记（二）</title>
-    <meta name="description" content="  Liner regression with one variable          1.model representation      Liner regression with one variable1.model representation首先讲了一个关于房价估计的单变量线性回归问题。知识点：...">
+    <title>Ng机器学习--编程作业心得总汇</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/09/05/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">
+    <link rel="canonical" href="http://localhost:4000/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -123,11 +123,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习课程笔记（二）</h1>
+        <h1>Ng机器学习--编程作业心得总汇</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-09-05
+                <i class="fa fa-calendar"></i>2017-10-26
             </div>
 
             <div class="label-card">
@@ -148,7 +148,9 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
+    
+        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
     
   
 
@@ -178,77 +180,32 @@
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
         <ul id="markdown-toc">
-  <li><a href="#liner-regression-with-one-variable" id="markdown-toc-liner-regression-with-one-variable">Liner regression with one variable</a>    <ul>
-      <li><a href="#1model-representation" id="markdown-toc-1model-representation">1.model representation</a></li>
-      <li><a href="#2cost-function" id="markdown-toc-2cost-function">2.cost function</a></li>
-      <li><a href="#3gradient-descent" id="markdown-toc-3gradient-descent">3.Gradient descent</a></li>
-      <li><a href="#4gradient-descent-for-liner-regression" id="markdown-toc-4gradient-descent-for-liner-regression">4.Gradient descent for liner regression</a></li>
-    </ul>
-  </li>
+  <li><a href="#1" id="markdown-toc-1">1</a></li>
+  <li><a href="#2" id="markdown-toc-2">2</a></li>
 </ul>
 
-<h1 id="liner-regression-with-one-variable">Liner regression with one variable</h1>
-<h2 id="1model-representation">1.model representation</h2>
-<p>首先讲了一个关于房价估计的单变量线性回归问题。<br />
-知识点：<br />
-1.关于训练集中术语的描述</p>
+<h2 id="1">1</h2>
+<blockquote>
+  <p>这是在应用optimization algorithm算法时，求损失函数返回值——梯度时，实现的方法<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-11.png" alt="lesson7-11.png" /><br />
+代码：</p>
 
-<ul>
-  <li>m:训练样本的数目</li>
-  <li>x:输入变量，通常叫做特征量</li>
-  <li>y:输出变量，或者目标量</li>
-</ul>
+  <div class="language-matlab highlighter-rouge"><pre class="highlight"><code><span class="c1">%我觉得这种写法简单高效</span>
+<span class="n">grad</span> <span class="o">=</span> <span class="mi">1</span><span class="p">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">X</span><span class="o">'</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">lambda</span><span class="p">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">theta</span><span class="p">;</span>
+<span class="n">grad</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span><span class="p">/</span><span class="n">m</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">);</span>
+<span class="c1">%很蠢的是在做实验5时，忘记了上一种写法，然后写了一种会抛出warning，其实应该抛出error的写法。</span>
+<span class="n">grad</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span>  <span class="nb">sum</span><span class="p">((</span><span class="n">X</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">))/</span><span class="n">m</span><span class="p">;</span>
+<span class="n">grad</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">X</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">.*</span> <span class="n">X</span><span class="p">(:,</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">))/</span><span class="n">m</span><span class="p">)</span><span class="o">'</span> <span class="o">+</span> <span class="n">lambda</span><span class="p">/</span><span class="n">m</span> <span class="o">*</span> <span class="n">theta</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">);</span>
+</code></pre>
+  </div>
 
-<p>2.该问题的逻辑过程<br />
-如图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-4.png" alt="lesson2-4.png" /><br />
-训练集作为输入，通过学习算法，输出h, 这里h表示hypothesis(假设)，是一个函数。<br />
-该问题的h函数，输入为房子大小，输出为房子的价格。<br />
-h是一个x到y的映射函数。</p>
+</blockquote>
 
-<p>3.h的表示<br />
-对于该问题，是一个简单的单变量线性回归问题，所以模型可以表示为:<br />
-$h_θ(x) = θ_0 + θ_1(x)$， $θ_i$为模型参数</p>
-
-<h2 id="2cost-function">2.cost function</h2>
-<p>知识点：<br />
-1.对于该线性回归问题，代价函数可以表示成： <br />
-$J(θ_0, θ_1)=\frac{1}{2m}\sum_{i=1}^{m}(h_θ(x^{(i)})-y^{(i)})^2$  =&gt; 乘以1/2m是为了在数学含义层面有更好的表示<br />
-目标就是使得该代价函数最小，$\begin{matrix}minimize \θ_0, θ_1 \end{matrix} J(θ_0, θ_1)$<br />
-代价函数有时也被称为平方误差代价函数。<br />
-2.需要理解的是假设函数$h_θ(x)$是对于一个<strong>固定θ值，关于x的函数</strong> ,而$J(θ)$是一个<strong>关于θ的函数</strong><br />
-假设$θ_0=0$，假设函数和代价函数的关系就下图所示（Ng在课程中画的）：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-5.png" alt="lesson2-5.png" /><br />
-由于我们的目标就是寻求使得代价函数$J(θ_1)$最小的$θ_1$值，从右图可以得到，当$θ_1$等于1是，代价函数最小。</p>
-
-<p>3.之间假设$θ_0=0$，当没有这个假设，存在两个参数时，代价函数描述如下：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-6.png" alt="lesson2-6.png" /><br />
-这是用MATLAB画出来的代价函数的3D图<br />
-Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-7.png" alt="lesson2-7.png" /><br />
-一个椭圆上的点都是拥有相同的J值。</p>
-
-<h2 id="3gradient-descent">3.Gradient descent</h2>
-<p>在上一小节，我们学习到了代价函数的表示方法并通过一些实际数据来形式化的描述出了代价函数的样子，当然，我们的目的并不是要画出代价函数的图像，然后人工地从图中寻找使得代价函数最小的$(θ_0,θ_1)$，而是希望通过编程自动地获取$(θ_0,θ_1)$值。  <br />
-如图所示  <img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-8.png" alt="lesson2-8.png" /><br />
-梯度下降算法的实现过程，就犹如下山，假设一个起始点，然后在每一步上抉择下山最快的方向，每次迈出的步子大小（小碎步还是大步子），就是之后提到的学习率（α）决定。可以看到，当初始点选择不同时，最后”引导”到的目的地也不同。</p>
-
-<p>梯度下降算法描述：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-9.png" alt="lesson2-9.png" /><br />
-这里需要注意的是j值有两个，即0和1，所以等于也会有两个，梯度下降算法要求等式需要同步更新，即下图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-10.png" alt="lesson2-10.png" /><br />
-对于梯度下降算法的一些知识点：</p>
-
-<ul>
-  <li>当学习速率过小时，下降速度会很慢很慢</li>
-  <li>当学习速度过大时，可能会造成不收敛</li>
-  <li>即使是固定的学习速率，梯度下降算法也会自动地逐渐采用较小的幅度，因为越是接近局部最优解，导数值越小。因此没有必要另外减少α</li>
-</ul>
-
-<h2 id="4gradient-descent-for-liner-regression">4.Gradient descent for liner regression</h2>
-<p>将代价函数带入到梯度下降算法当中，得到<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson2-11.png" alt="lesson2-11.png" /><br />
-该公式的计算用到了些微积分的知识，还算简单。</p>
+<h2 id="2">2</h2>
+<blockquote>
+  <p>正则化要忽略$\theta_0$，要忽略$\theta_0$，要忽略$\theta_0$，重要的事说三遍。<br />
+<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-12.png" alt="lesson7-12.png" /></p>
+</blockquote>
 
 
         </article>
@@ -260,12 +217,23 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
             
                 
                     
+                
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
                         
                         <h2 id="similar_posts">Similar Posts</h2>
                         <ul>
                         
                         <li class="relatedPost">
-                            <a href="/2017/10/21/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">Ng机器学习课程笔记（五）
+                            <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）
                             
                             </a>
                         </li>
@@ -281,7 +249,39 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
                     
                         
                         <li class="relatedPost">
-                            <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习课程笔记（四）
+                            <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">Ng机器学习--课程笔记（五）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习--课程笔记（四）
                             
                             </a>
                         </li>
@@ -308,7 +308,7 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
                     
                         
                         <li class="relatedPost">
-                            <a href="/2017/09/14/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%89/">Ng机器学习课程笔记（三）
+                            <a href="/2017/09/14/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%89/">Ng机器学习--课程笔记（三）
                             
                             </a>
                         </li>
@@ -324,7 +324,7 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
                     
                         
                         <li class="relatedPost">
-                            <a href="/2017/08/18/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%80/">Ng机器学习课程笔记（一)
+                            <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）
                             
                             </a>
                         </li>
@@ -342,43 +342,6 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
             
         
             
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-            
-                
-                    
-                
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
             
                 
                     
@@ -392,13 +355,13 @@ Ng讲课时用椭圆图来进行讲述，如下右图所示：<br />
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/08/18/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%80/">Ng机器学习课程笔记（一)</a></p>
+        <p><strong>上一篇</strong> <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）</a></p>
         
     </div>
     <div class="nex">
 
         
-        <p><strong>下一篇</strong> <a href="/2017/09/14/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%89/">Ng机器学习课程笔记（三）</a></p>
+        <p><strong>下一篇</strong> <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）</a></p>
         
     </div>
 </div>

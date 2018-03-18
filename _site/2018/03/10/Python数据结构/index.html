@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Python数据结构</title>
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="http://localhost:4000/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+    <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
+
+
+    <script>
+    // 百度统计代码
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?11d0a7524a357b826a143e592f616077;";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">SiriusHsh</a>
+        <small>记录思考，整理人生</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>Python数据结构</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-03-10
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>HSH
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a-->
+        <a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a>&nbsp;
+    
+        <!--a href="/tag/#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84" title="Tag: 数据结构" rel="tag">数据结构</a-->
+        <a href="/tag/#数据结构" title="Tag: 数据结构" rel="tag">数据结构</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#python实现链表" id="markdown-toc-python实现链表">python实现链表</a></li>
+  <li><a href="#python实现栈" id="markdown-toc-python实现栈">python实现栈</a></li>
+  <li><a href="#python实现树以及7种遍历方式" id="markdown-toc-python实现树以及7种遍历方式">python实现树以及7种遍历方式</a></li>
+</ul>
+
+<h2 id="python实现链表">python实现链表</h2>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s">'''
+    data: 节点保存的数据
+    _next: 保存下一个节点对象
+    '''</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">pnext</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="n">pnext</span>
+    
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s">'''
+        用来定义Node的字符输出
+        print为输出data
+        '''</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ChainTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c">#判断是否为空</span>
+    <span class="k">def</span> <span class="nf">isEmpty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
+   
+    <span class="c">#增加一个节点</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_or_node</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_or_node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">data_or_node</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">data_or_node</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+            <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c">#删除一个节点</span>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'this chain table is empty'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'error: out of index'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c">#由于没有空头结点，所以删除第一节节点需要特殊考虑</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">_next</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">return</span> 
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="n">node</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">prev</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="c">#修改一个节点</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'this chain table is empty'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'error: out of index'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+
+    <span class="c">#查找一个节点</span>
+    <span class="k">def</span> <span class="nf">getItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'this chain table is empty'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'error: out of index'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c">#查找一个节点的索引</span>
+    <span class="k">def</span> <span class="nf">getIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'this chain table is empty'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">j</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'{} not found'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="k">return</span>
+
+    <span class="c">#插入一个节点</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idnex</span><span class="p">,</span> <span class="n">data_or_node</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'this chain table is empty'</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'error: out of index'</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_or_node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">data_or_node</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">data_or_node</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> 
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span>
+        <span class="k">while</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="n">node</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_next</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="n">node</span>
+            <span class="n">prev</span><span class="o">.</span><span class="n">_next</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="c">#清空链表</span>
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre>
+</div>
+
+<h2 id="python实现栈">python实现栈</h2>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Stack</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">==</span> <span class="p">[]</span>
+
+    <span class="c">#返回栈顶元素</span>
+    <span class="k">def</span> <span class="nf">peek</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c">#返回栈的大小</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+
+    <span class="c">#入栈</span>
+    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="c">#出栈</span>
+    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+</code></pre>
+</div>
+
+<h2 id="python实现树以及7种遍历方式">python实现树以及7种遍历方式</h2>
+
+<ul>
+  <li>先序遍历（递归&amp;循环）</li>
+  <li>中序遍历（递归&amp;循环）</li>
+  <li>后续遍历（递归&amp;循环）</li>
+  <li>宽度优先遍历（循环）</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Node</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">lchild</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">rchild</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elem</span> <span class="o">=</span> <span class="n">elem</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lchild</span> <span class="o">=</span> <span class="n">lchild</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rchild</span> <span class="o">=</span> <span class="n">rchild</span>
+
+<span class="k">class</span> <span class="nc">Tree</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">]</span>
+
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">pop_node</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pop_node</span><span class="o">.</span><span class="n">lchild</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">pop_node</span><span class="o">.</span><span class="n">lchild</span> <span class="o">=</span> <span class="n">node</span>
+                    <span class="k">return</span> 
+                <span class="k">elif</span> <span class="n">pop</span><span class="o">.</span><span class="n">node</span><span class="o">.</span><span class="n">rchild</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">pop_node</span><span class="o">.</span><span class="n">rchild</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop_node</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+                    <span class="n">q</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop_node</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+
+    <span class="c">#前序遍历，递归方法</span>
+    <span class="k">def</span> <span class="nf">perorder_digui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+
+    <span class="c">#中序遍历，递归方法</span>
+    <span class="k">def</span> <span class="nf">inorder_digui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+
+    <span class="c">#后续遍历，递归方法</span>
+    <span class="k">def</span> <span class="nf">postorder_digui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">root</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">postorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postorder_digui</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+
+    <span class="c">#前序遍历，循环方法</span>
+    <span class="k">def</span> <span class="nf">perorder_xunhuan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">()</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+
+    <span class="c">#中序遍历，循环方法</span>
+    <span class="k">def</span> <span class="nf">inorder_xunhuan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">()</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="k">while</span> <span class="n">node</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">node</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">lchild</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">rchild</span>
+
+    <span class="c">#后续遍历，循环方法</span>
+    <span class="k">def</span> <span class="nf">postorder_xunhuan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">()</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">()</span>
+        <span class="n">s1</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">s1</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">s2</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">:</span>
+                <span class="n">s1</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">:</span>
+                <span class="n">s1</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">s2</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">s2</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+
+    <span class="c">#层次遍历</span>
+    <span class="k">def</span> <span class="nf">bin_tree_level_traverse</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">queue</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elem</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">:</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">lchild</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">:</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">rchild</span><span class="p">)</span>
+</code></pre>
+</div>
+
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/10/10/python%E7%88%AC%E8%99%AB-%E4%B8%80/">Python爬虫（一）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2017/08/10/Python%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">Python文件操作
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+             本站记录我在学习生活的点点滴滴。 
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SiriusHsh" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:siriushsh@foxmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>   
+            <a href="https://www.zhihu.com/people/SiriusHsh" title="Zhihu"><i class="iconfont icon-daoruzhihu"></i></a>      
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>
