@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（五）</title>
-    <meta name="description" content="  神经网络神经网络神经网络模型如图所示： 一些基础知识：  输入层，输出层，隐含层  观察到，每一层都会再加一项，这一项称为偏置项（bias unit），值为1  在神经网络最后我们仍旧使用逻辑函数（logistic function），但是在这里我们通常称为 sigmoid (logistic) activa...">
+    <title>恐怖的二分查找</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">
+    <link rel="canonical" href="http://localhost:4000/2018/04/10/%E6%81%90%E6%80%96%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -125,11 +125,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（五）</h1>
+        <h1>恐怖的二分查找</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-10-21
+                <i class="fa fa-calendar"></i>2018-04-10
             </div>
 
             <div class="label-card">
@@ -150,9 +150,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
     
   
 
@@ -169,8 +167,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <!--a href="/tag/#%E7%AE%97%E6%B3%95" title="Tag: 算法" rel="tag">算法</a-->
+        <a href="/tag/#算法" title="Tag: 算法" rel="tag">算法</a>
     
   
 
@@ -181,44 +179,96 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#神经网络" id="markdown-toc-神经网络">神经网络</a></li>
-  <li><a href="#模型" id="markdown-toc-模型">模型</a></li>
-  <li><a href="#分类问题" id="markdown-toc-分类问题">分类问题</a></li>
-</ul>
+        
+<blockquote>
+  <p>Programming Perl上说找10个程序员写二分查找，9个是写错的。。。只有10%的程序员能写出没有bug的二分查找，恐怖如斯。</p>
 
-<h2 id="神经网络">神经网络</h2>
-<p>神经网络模型如图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-1.png" alt="lesson5-1.png" /> <br />
-一些基础知识：</p>
-<ol>
-  <li>输入层，输出层，隐含层</li>
-  <li>观察到，每一层都会再加一项，这一项称为偏置项（bias unit），值为1</li>
-  <li>在神经网络最后我们仍旧使用逻辑函数（logistic function），但是在这里我们通常称为 sigmoid (logistic) activation function，sigmoid激活函数</li>
-  <li>参数$\theta$称为权重（weights）</li>
-</ol>
+  <p>循环初始化，循环体终止判断，以及循环体内部区间变化三个地方需要统一。</p>
+</blockquote>
 
-<p>$a_0^2,a_1^2,…,a_n^2$称为激活元（activation units）<br />
-$a_i^{(j)}$ = “activation” of unit i in layer j <br />
-$\theta^{(j)}$ = matrix of weights controlling function mapping from layer j to layer j+1<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-2.png" alt="lesson5-2.png" /><br />
-<strong>需要注意的是$\theta^{(j)}等于s_{j+1} * (s_j + 1)$</strong></p>
+<p>很快，我马上就写出了一个正确版本 。因为已经看了别人的讲解，不会写错了2333。</p>
 
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-4.png" alt="lesson5-4.png" /></p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">:</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mid</span>
+        <span class="k">elif</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s">'Not Found'</span>
 
-<p>x可以看成$a^{(1)}$
-于是可以得出：<br />
-$z^{(j)} = \theta^{(j-1)}*a^{(j-1)}$<br />
-$a^{(j)} = g(z^{(j)})$</p>
 
-<h2 id="模型">模型</h2>
-<p>神经网络通过一层一层的隐含层，以及每一个$\theta$，可以将简单的初始输入表示成复杂的函数。<br />
-如图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-5.png" alt="lesson5-5.png" /></p>
+<span class="k">print</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+</code></pre>
+</div>
 
-<h2 id="分类问题">分类问题</h2>
-<p>将神经网络应用到神经网络中。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-6.png" alt="lesson5-6.png" /></p>
+<p>于是，就让我们看看到底哪些地方会弄错吧。</p>
+
+<p>这是一个大杂烩版本，为什么说大杂烩呢，请听接下来分析。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
+    low = 0
+    high = len(arr)
+    while low &lt; high:
+        mid = (low + high) // 2
+        if arr[mid] == key:
+            return arr[mid]
+        elif arr[mid] &gt; key:
+            high = mid - 1
+        else:
+            low = mid + 1
+    return 'Not Found'
+print(binary_search([1,2,3,4,5,6,7,8,9,10], 5)) # =&gt; Not Found
+print(binary_search([1,2,3,4,5,6,7,8,9,10], 8)) # =&gt; Not Found
+</code></pre>
+</div>
+
+<p>这个程序有一个特点，就是它有时能获得正确解，有时候不能获得正确解。</p>
+
+<p>这就是区间的问题，在程序设计时我们要注意到自己使用的区间范围。如上程序，循环体是<code class="highlighter-rouge">while low &lt; high</code></p>
+
+<p>，考虑当arr[mid] &gt; key条件满足时，此时要找的数肯定在[low, middle)这个区间里，注意这里右区间的开的，所以如果按照程序所写high = mid - 1，那么arr[middle-1]这个值就永远访问不到了。所以对待<strong>左闭右开</strong>的区间形式，应该让high = mid</p>
+
+<p>如下是正确的<strong>左闭右开</strong>版本：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
+    low = 0
+    high = len(arr)                 # 重点 非n-1
+    while low &lt; high: 				# 重点 是 low &lt; high
+        mid = (low + high) // 2
+        if arr[mid] == key:
+            return arr[mid]      
+        elif arr[mid] &gt; key:
+            high = mid               # 重点
+        else:
+            low = mid + 1
+    return 'Not Found'
+print(binary_search([1,2,3,4,5,6,7,8,9,10], 5))
+</code></pre>
+</div>
+
+<p>而最先给出的就是正确的<strong>左闭右闭</strong>版本</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
+    low = 0
+    high = len(arr) - 1            # 重点 是n-1
+    while low &lt;= high:			   # 重点 是 low &lt;= high
+        mid = (low + high) // 2
+        if arr[mid] == key:
+            return mid
+        elif arr[mid] &gt; key:
+            high = mid - 1         # 重点 由于右区间是闭合的，所以是high = mid - 1
+        else:
+            low = mid + 1
+    return 'Not Found'
+
+print(binary_search([1,2,3,4,5,6,7,8,9,10], 0))
+</code></pre>
+</div>
 
 
         </article>
@@ -228,13 +278,6 @@ $a^{(j)} = g(z^{(j)})$</p>
         
             
             
-                
-                    
-                
-            
-        
-            
-            
         
             
             
@@ -251,17 +294,12 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
-                        
-                        <h2 id="similar_posts">Similar Posts</h2>
-                        <ul>
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）
-                            
-                            </a>
-                        </li>
-                        
-                        
+                
+            
+        
+            
+            
+                
                     
                 
             
@@ -270,15 +308,6 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
@@ -286,30 +315,12 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
             
             
                 
-                    
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习--课程笔记（四）
-                            
-                            </a>
-                        </li>
-                        
-                        
                     
                 
             
@@ -329,15 +340,6 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/09/14/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%89/">Ng机器学习--课程笔记（三）
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
@@ -345,32 +347,19 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
-        
-            </ul>
         
 
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习--课程笔记（四）</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/03/21/%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%80%E8%88%AC%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/">大数据一般的处理方式</a></p>
         
     </div>
     <div class="nex">
 
-        
-        <p><strong>下一篇</strong> <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）</a></p>
         
     </div>
 </div>
@@ -394,8 +383,6 @@ $a^{(j)} = g(z^{(j)})$</p>
                     Content
                 </div>
                 <ul id="content-side" class="content-ul">
-                    
-                    <li><a href="#similar_posts">Similar Posts</a></li>
                     
                     <li><a href="#comments">Comments</a></li>
                 </ul>
