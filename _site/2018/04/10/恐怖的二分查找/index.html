@@ -210,20 +210,20 @@
 
 <p>这是一个大杂烩版本，为什么说大杂烩呢，请听接下来分析。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
-    low = 0
-    high = len(arr)
-    while low &lt; high:
-        mid = (low + high) // 2
-        if arr[mid] == key:
-            return arr[mid]
-        elif arr[mid] &gt; key:
-            high = mid - 1
-        else:
-            low = mid + 1
-    return 'Not Found'
-print(binary_search([1,2,3,4,5,6,7,8,9,10], 5)) # =&gt; Not Found
-print(binary_search([1,2,3,4,5,6,7,8,9,10], 8)) # =&gt; Not Found
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s">'Not Found'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">5</span><span class="p">))</span> <span class="c"># =&gt; Not Found</span>
+<span class="k">print</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">8</span><span class="p">))</span> <span class="c"># =&gt; Not Found</span>
 </code></pre>
 </div>
 
@@ -235,38 +235,38 @@ print(binary_search([1,2,3,4,5,6,7,8,9,10], 8)) # =&gt; Not Found
 
 <p>如下是正确的<strong>左闭右开</strong>版本：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
-    low = 0
-    high = len(arr)                 # 重点 非n-1
-    while low &lt; high: 				# 重点 是 low &lt; high
-        mid = (low + high) // 2
-        if arr[mid] == key:
-            return arr[mid]      
-        elif arr[mid] &gt; key:
-            high = mid               # 重点
-        else:
-            low = mid + 1
-    return 'Not Found'
-print(binary_search([1,2,3,4,5,6,7,8,9,10], 5))
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>                 <span class="c"># 重点 非n-1</span>
+    <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span> 				<span class="c"># 重点 是 low &lt; high</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>      
+        <span class="k">elif</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span>               <span class="c"># 重点</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s">'Not Found'</span>
+<span class="k">print</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">5</span><span class="p">))</span>
 </code></pre>
 </div>
 
 <p>而最先给出的就是正确的<strong>左闭右闭</strong>版本</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>def binary_search(arr, key):
-    low = 0
-    high = len(arr) - 1            # 重点 是n-1
-    while low &lt;= high:			   # 重点 是 low &lt;= high
-        mid = (low + high) // 2
-        if arr[mid] == key:
-            return mid
-        elif arr[mid] &gt; key:
-            high = mid - 1         # 重点 由于右区间是闭合的，所以是high = mid - 1
-        else:
-            low = mid + 1
-    return 'Not Found'
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">binary_search</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>            <span class="c"># 重点 是n-1</span>
+    <span class="k">while</span> <span class="n">low</span> <span class="o">&lt;=</span> <span class="n">high</span><span class="p">:</span>			   <span class="c"># 重点 是 low &lt;= high</span>
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span> <span class="o">+</span> <span class="n">high</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mid</span>
+        <span class="k">elif</span> <span class="n">arr</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">key</span><span class="p">:</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="mi">1</span>         <span class="c"># 重点 由于右区间是闭合的，所以是high = mid - 1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">low</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s">'Not Found'</span>
 
-print(binary_search([1,2,3,4,5,6,7,8,9,10], 0))
+<span class="k">print</span><span class="p">(</span><span class="n">binary_search</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
 </code></pre>
 </div>
 
