@@ -5,9 +5,50 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 11 Apr 2018 22:47:27 +0800</pubDate>
-    <lastBuildDate>Wed, 11 Apr 2018 22:47:27 +0800</lastBuildDate>
+    <pubDate>Sat, 26 May 2018 22:38:32 +0800</pubDate>
+    <lastBuildDate>Sat, 26 May 2018 22:38:32 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Python模块之feedparser学习</title>
+        <description>
+</description>
+        <pubDate>Sat, 26 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>sublime text 3 出现license key no longer valid and has been removed</title>
+        <description>
+</description>
+        <pubDate>Thu, 03 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/05/03/sublime-text-license-key-no-longer-valid-and-has-been-removed/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/05/03/sublime-text-license-key-no-longer-valid-and-has-been-removed/</guid>
+        
+        <category>日常</category>
+        
+        
+        <category>问题解决</category>
+        
+      </item>
+    
+      <item>
+        <title>Matplotlib使用</title>
+        <description>
+</description>
+        <pubDate>Wed, 25 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/04/25/matplotlib%E4%BD%BF%E7%94%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/04/25/matplotlib%E4%BD%BF%E7%94%A8/</guid>
+        
+        
+      </item>
     
       <item>
         <title>常见的排序算法</title>
@@ -123,79 +164,6 @@ Ng给出了如图所示的一些方法，但是总不能全试吧，浪费时间
         <category>学习笔记</category>
         
         <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>Ng机器学习--课程笔记（五）</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#神经网络&quot; id=&quot;markdown-toc-神经网络&quot;&gt;神经网络&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;神经网络&quot;&gt;神经网络&lt;/h2&gt;
-神经网络模型如图所示：&lt;br /&gt;
-&lt;img src=&quot;http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-1.png&quot; alt=&quot;lesson5-1.png&quot; /&gt; &lt;br /&gt;
-一些基础知识：
-&lt;ol&gt;
-  &lt;li&gt;输入层，输出层，隐含层&lt;/li&gt;
-  &lt;li&gt;观察到，每一层都会再加一项，这一项称为偏置项（bias unit），值为1&lt;/li&gt;
-  &lt;li&gt;在神经网络最后我们仍旧使用逻辑函数（logistic function），但是在这里我们通常称为 sigmoid (logistic) activation function，sigmoid激活函数&lt;/li&gt;
-  &lt;li&gt;参数$\theta$称为权重（weights）&lt;/li&gt;
-&lt;/ol&gt;
-
-</description>
-        <pubDate>Sat, 21 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/</guid>
-        
-        <category>机器学习</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>Ng机器学习--课程笔记（四）</title>
-        <description>
-这一节开始讲分类问题，首先对分类问题的假设函数$h_\theta(x)$进行了定义，当仍然使用线性回归（linear regression）时，随着新样本的引入（即使该样本显而易见的属于某一分类），会对原假设函数产生影响（导致直线斜率改变）。随之引入了逻辑回归的概念。
-
-</description>
-        <pubDate>Wed, 11 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/</guid>
-        
-        <category>机器学习</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>Python爬虫（一）</title>
-        <description>
-就在今天，在批助教报告的时候，乐学网网站崩了！！批量下载报告的功能没法用了。虽然后来把一页显示20个报告改成300个…然后Ctrl+F查找查一个找一个的也挺方便的，但是感觉还是如果会爬虫技能的话，分分钟下好报告，还能有点成就感。&lt;br /&gt;
-于是Python爬虫系列诞生。“目标驱动”是我比较喜欢的学习模式23333，这时思维比较活跃。&lt;br /&gt;
-这是第一期，主要是熟悉下爬虫原理以及基本实现。
-
-</description>
-        <pubDate>Tue, 10 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/10/python%E7%88%AC%E8%99%AB-%E4%B8%80/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/10/python%E7%88%AC%E8%99%AB-%E4%B8%80/</guid>
-        
-        <category>Python</category>
-        
-        <category>爬虫</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>爬虫</category>
         
       </item>
     

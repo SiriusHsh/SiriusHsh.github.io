@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（一)</title>
-    <meta name="description" content="  Tom Mitchell试给出机器学习的定义：“A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its perfo...">
+    <title>sublime text 3 出现license key no longer valid and has been removed</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/08/18/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%80/">
+    <link rel="canonical" href="http://localhost:4000/2018/05/03/sublime-text-license-key-no-longer-valid-and-has-been-removed/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -125,11 +125,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（一)</h1>
+        <h1>sublime text 3 出现license key no longer valid and has been removed</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-08-18
+                <i class="fa fa-calendar"></i>2018-05-03
             </div>
 
             <div class="label-card">
@@ -150,9 +150,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#问题解决" title="Category: 问题解决" rel="category">问题解决</a>
     
   
 
@@ -169,8 +167,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <!--a href="/tag/#%E6%97%A5%E5%B8%B8" title="Tag: 日常" rel="tag">日常</a-->
+        <a href="/tag/#日常" title="Tag: 日常" rel="tag">日常</a>
     
   
 
@@ -181,32 +179,44 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#supervised-learning监督学习" id="markdown-toc-supervised-learning监督学习">supervised learning（监督学习）</a></li>
-  <li><a href="#unsupervised-learning无监督学习" id="markdown-toc-unsupervised-learning无监督学习">unsupervised learning（无监督学习）</a></li>
-</ul>
+        
+<ol>
+  <li>
+    <p>在hosts中添加下面内容：</p>
 
-<blockquote>
-  <p>Tom Mitchell试给出机器学习的定义：<br />
-“A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.”<br />
-三个部分：E，T，P。E为训练，T为任务，P为性能。</p>
-</blockquote>
+    <div class="highlighter-rouge"><pre class="highlight"><code>#sublime text 3
+0.0.0.0 license.sublimehq.com
+0.0.0.0 45.55.255.55
+0.0.0.0 45.55.41.223
+</code></pre>
+    </div>
 
-<h2 id="supervised-learning监督学习">supervised learning（监督学习）</h2>
-<p>监督学习中数据集中的每个数据都有相应的正确答案（训练集），算法基于这些来做预测。</p>
+    <p>其中Ubuntu的hosts文件在<code class="highlighter-rouge">/etc/hosts</code> 
+Windows <code class="highlighter-rouge">C:\Windows\System32\drivers\etc</code> 
+Mac <code class="highlighter-rouge">/Private/etc</code></p>
+  </li>
+  <li>
+    <p>填入License</p>
 
-<ul>
-  <li>regression（回归）<br />
-continuous valued output（输出连续的值）</li>
-  <li>classification（分类） <br />
-discrete valued output（输出离散的值）</li>
-</ul>
+    <div class="highlighter-rouge"><pre class="highlight"><code>—– BEGIN LICENSE —–
+TwitterInc
+200 User License
+EA7E-890007
+1D77F72E 390CDD93 4DCBA022 FAF60790
+61AA12C0 A37081C5 D0316412 4584D136
+94D7F7D4 95BC8C1C 527DA828 560BB037
+D1EDDD8C AE7B379F 50C9D69D B35179EF
+2FE898C4 8E4277A8 555CE714 E1FB0E43
+D5D52613 C3D12E98 BC49967F 7652EED2
+9D2D2E61 67610860 6D338B72 5CF95C69
+E36B85CC 84991F19 7575D828 470A92AB
+—— END LICENSE ——
+</code></pre>
+    </div>
 
-<h2 id="unsupervised-learning无监督学习">unsupervised learning（无监督学习）</h2>
-<p>无监督学习是只拥有数据集，但是数据集没有属性标签，让计算机自动的找出数据集中蕴含的类型结构。首先介绍了聚类，聚类是无监督学习的一种。然后讲了鸡尾酒宴会问题，就是把音频里混合的人声（背景音）给分离提取出来。<br />
-Ng强调到你以为实现上述效果需要写很多代码，调用很多库？ 其实，只需要一行代码66666<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson1-1.png" alt="lesson1-1.png" /></p>
-
+    <p>​</p>
+  </li>
+</ol>
 
         </article>
         <hr>
@@ -222,13 +232,6 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
         
             
             
-                
-                    
-                
-            
-        
-            
-            
         
             
             
@@ -262,17 +265,12 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
                 
                     
-                        
-                        <h2 id="similar_posts">Similar Posts</h2>
-                        <ul>
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）
-                            
-                            </a>
-                        </li>
-                        
-                        
+                
+            
+        
+            
+            
+                
                     
                 
             
@@ -281,15 +279,6 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
@@ -297,32 +286,21 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
                 
             
         
-        
-            </ul>
         
 
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/08/10/Python%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">Python文件操作</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/04/25/matplotlib%E4%BD%BF%E7%94%A8/">Matplotlib使用</a></p>
         
     </div>
     <div class="nex">
 
         
-        <p><strong>下一篇</strong> <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）</a></p>
+        <p><strong>下一篇</strong> <a href="/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/">Python模块之feedparser学习</a></p>
         
     </div>
 </div>
@@ -346,8 +324,6 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
                     Content
                 </div>
                 <ul id="content-side" class="content-ul">
-                    
-                    <li><a href="#similar_posts">Similar Posts</a></li>
                     
                     <li><a href="#comments">Comments</a></li>
                 </ul>

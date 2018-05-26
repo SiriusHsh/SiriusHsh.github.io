@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（一)</title>
-    <meta name="description" content="  Tom Mitchell试给出机器学习的定义：“A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its perfo...">
+    <title>Python模块之feedparser学习</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/08/18/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%80/">
+    <link rel="canonical" href="http://localhost:4000/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -125,11 +125,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（一)</h1>
+        <h1>Python模块之feedparser学习</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-08-18
+                <i class="fa fa-calendar"></i>2018-05-26
             </div>
 
             <div class="label-card">
@@ -150,9 +150,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
     
   
 
@@ -169,8 +167,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <!--a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a-->
+        <a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a>
     
   
 
@@ -181,31 +179,46 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#supervised-learning监督学习" id="markdown-toc-supervised-learning监督学习">supervised learning（监督学习）</a></li>
-  <li><a href="#unsupervised-learning无监督学习" id="markdown-toc-unsupervised-learning无监督学习">unsupervised learning（无监督学习）</a></li>
-</ul>
+        
+<p>今天看《集体智慧编程》的时候看到了一个不认识的Python模块——feedparser，本文简略记录下该模块的用途。</p>
+
+<p>feedparser可轻松地实现从任何 RSS 或 Atom 订阅源得到标题、链接和文章的条目。</p>
+
+<p><strong>parse()方法</strong></p>
 
 <blockquote>
-  <p>Tom Mitchell试给出机器学习的定义：<br />
-“A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.”<br />
-三个部分：E，T，P。E为训练，T为任务，P为性能。</p>
+  <p>feedparser 最为核心的函数自然是 parse() 解析 URL 地址的函数。
+我们知道，每个RSS和Atom订阅源都包含一个标题（d.feed.title）和一组文章条目(d.entries)
+通常每个文章条目都有一段摘要（d.entries[i].summary）,或者是包含了条目中实际文本的描述性标签（d.entries[i].description）</p>
 </blockquote>
 
-<h2 id="supervised-learning监督学习">supervised learning（监督学习）</h2>
-<p>监督学习中数据集中的每个数据都有相应的正确答案（训练集），算法基于这些来做预测。</p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span><span class="kn">import</span> <span class="nn">feedparser</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">d</span> <span class="o">=</span> <span class="n">feedparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">'https://siriushsh.github.io/feed'</span><span class="p">)</span> <span class="c">#d是一个字典</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">dict_keys</span><span class="p">([</span><span class="s">'namespaces'</span><span class="p">,</span> <span class="s">'bozo'</span><span class="p">,</span> <span class="s">'updated'</span><span class="p">,</span> <span class="s">'version'</span><span class="p">,</span> <span class="s">'updated_parsed'</span><span class="p">,</span> <span class="s">'href'</span><span class="p">,</span> <span class="s">'headers'</span><span class="p">,</span> <span class="s">'encoding'</span><span class="p">,</span> <span class="s">'feed'</span><span class="p">,</span> <span class="s">'entries'</span><span class="p">,</span> <span class="s">'status'</span><span class="p">])</span>
+</code></pre>
+</div>
 
-<ul>
-  <li>regression（回归）<br />
-continuous valued output（输出连续的值）</li>
-  <li>classification（分类） <br />
-discrete valued output（输出离散的值）</li>
-</ul>
+<p><strong>d.feed</strong></p>
 
-<h2 id="unsupervised-learning无监督学习">unsupervised learning（无监督学习）</h2>
-<p>无监督学习是只拥有数据集，但是数据集没有属性标签，让计算机自动的找出数据集中蕴含的类型结构。首先介绍了聚类，聚类是无监督学习的一种。然后讲了鸡尾酒宴会问题，就是把音频里混合的人声（背景音）给分离提取出来。<br />
-Ng强调到你以为实现上述效果需要写很多代码，调用很多库？ 其实，只需要一行代码66666<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson1-1.png" alt="lesson1-1.png" /></p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="p">[</span><span class="s">'feed'</span><span class="p">][</span><span class="s">'title'</span><span class="p">]</span>
+<span class="s">'SiriusHsh'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">title</span>  <span class="c">#通过属性的方式访问</span>
+<span class="s">'SiriusHsh'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">feed</span><span class="o">.</span><span class="n">subtitle</span>
+<span class="s">'问题解决、学习笔记、心得分享'</span>
+</code></pre>
+</div>
+
+<p><strong>d.entires</strong></p>
+
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>  <span class="c">#类型为列表</span>
+<span class="c">#&lt;class 'list'&gt;</span>
+<span class="o">&gt;&gt;&gt;</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>   <span class="c">#一共20篇文章</span>
+<span class="mi">20</span>
+<span class="o">&gt;&gt;&gt;</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">entries</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>         <span class="c">#列出前5篇文章的标题</span>
+</code></pre>
+</div>
 
 
         </article>
@@ -222,13 +235,6 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
         
             
             
-                
-                    
-                
-            
-        
-            
-            
         
             
             
@@ -245,17 +251,6 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
         
             
-            
-        
-            
-            
-                
-                    
-                
-            
-                
-                    
-                
             
         
             
@@ -267,12 +262,16 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
                         <ul>
                         
                         <li class="relatedPost">
-                            <a href="/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">Ng机器学习--课程笔记（七）
+                            <a href="/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Python数据结构
                             
                             </a>
                         </li>
                         
                         
+                    
+                
+            
+                
                     
                 
             
@@ -281,14 +280,12 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇
-                            
-                            </a>
-                        </li>
-                        
-                        
+                
+            
+        
+            
+            
+                
                     
                 
             
@@ -297,14 +294,12 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
             
                 
                     
-                        
-                        <li class="relatedPost">
-                            <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）
-                            
-                            </a>
-                        </li>
-                        
-                        
+                
+            
+        
+            
+            
+                
                     
                 
             
@@ -316,13 +311,11 @@ Ng强调到你以为实现上述效果需要写很多代码，调用很多库？
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/08/10/Python%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">Python文件操作</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/05/03/sublime-text-license-key-no-longer-valid-and-has-been-removed/">sublime text 3 出现license key no longer valid and has been removed</a></p>
         
     </div>
     <div class="nex">
 
-        
-        <p><strong>下一篇</strong> <a href="/2017/09/05/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%8C/">Ng机器学习--课程笔记（二）</a></p>
         
     </div>
 </div>
