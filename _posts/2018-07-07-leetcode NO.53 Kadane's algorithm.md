@@ -29,9 +29,7 @@ mathjax: true
 
 第一眼一看，这个不就是算法作业里的题嘛，用分治写的，于是立马写了个分治算法：
 
-
-
-```Python
+```python
 class Solution:
     def maxSubArray(self, nums):
         """
@@ -59,8 +57,6 @@ class Solution:
         return max(right_max, left_max, mid_max)
 ```
 
-
-
 时间复杂度：O(nlogn)，老长一段提交一看，心拔凉拔凉，战胜了2.9%的记录。。。
 
 ![](http://octtw77pk.bkt.clouddn.com/WX20180705-161108@2x.png)
@@ -75,9 +71,7 @@ class Solution:
 
 Kadane's algorithm算法描述：
 
-
-
-```Python
+```python
 def max_subarray(A):
     max_ending_here = max_so_far = A[0]
     for x in A[1:]:
@@ -85,8 +79,6 @@ def max_subarray(A):
         max_so_far = max(max_so_far, max_ending_here)  #一直记录最大的片段加和
     return max_so_far
 ```
-
-
 
 这回速度：
 

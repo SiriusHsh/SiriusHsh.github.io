@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>解决JNI相关问题(2)</title>
-    <meta name="description" content="  本篇主要讲述JNI中GetStringUTFChars()方法的用法。本篇主要讲述JNI中GetStringUTFChars()方法的用法。">
+    <title>spyder代码自动补全</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(2)/">
+    <link rel="canonical" href="http://localhost:4000/2018/05/28/spyder%E4%BB%A3%E7%A0%81%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -125,11 +125,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>解决JNI相关问题(2)</h1>
+        <h1>spyder代码自动补全</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2016-09-04
+                <i class="fa fa-calendar"></i>2018-05-28
             </div>
 
             <div class="label-card">
@@ -167,11 +167,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#Java" title="Tag: Java" rel="tag">Java</a-->
-        <a href="/tag/#Java" title="Tag: Java" rel="tag">Java</a>&nbsp;
-    
-        <!--a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a-->
-        <a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a>
+        <!--a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a-->
+        <a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a>
     
   
 
@@ -182,20 +179,20 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#本篇主要讲述jni中getstringutfchars方法的用法" id="markdown-toc-本篇主要讲述jni中getstringutfchars方法的用法">本篇主要讲述JNI中GetStringUTFChars()方法的用法。</a></li>
-</ul>
-<h3 id="本篇主要讲述jni中getstringutfchars方法的用法">本篇主要讲述JNI中GetStringUTFChars()方法的用法。</h3>
+        
+<p>今天用Spyder的时候突然发现没有自动补全了。解决方案：</p>
 
-<p>Java中有String类型，对应JNI中的JString，而C语言中没有这种类型，GetStringUTFChars()这个方法就是用来将JString转换成C语言中的char *类型的。</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>conda uninstall enum34 
+conda install jedi=0.11.0 
+conda install parso=0.1.0
+</code></pre>
+</div>
 
-<p>该函数有两种形式：</p>
-<ol>
-  <li><strong>C中的形式</strong><br />
-C代码：<code class="highlighter-rouge">const char *str = (*env)-&gt;GetStringUTFChars(env,string,0)</code></li>
-  <li><strong>C++中的形式</strong><br />
-C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTFChars(string,0)</code></li>
-</ol>
+<blockquote>
+  <p>增加新的模块，这个暂时没用到</p>
+
+  <p>打开\Lib\site-packages\spyder\utils\introspection路径，找到module_completion.py文件（也可能在别的文件夹下，反正搜索一下这个同名的文件就可以了），将需要补全的库名增加到mods变量中。</p>
+</blockquote>
 
 
         </article>
@@ -207,6 +204,33 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
             
                 
                     
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/">Python模块之feedparser学习
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+        
+            
+            
                 
                     
                 
@@ -217,35 +241,23 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
                 
                     
                 
-                    
-                
             
         
             
             
                 
                     
-                
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Python数据结构
+                            
+                            </a>
+                        </li>
+                        
+                        
                     
                 
             
-        
-            
-            
-        
-            
-            
-                
-                    
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
                 
                     
                 
@@ -256,11 +268,10 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
                 
                     
                 
-                    
-                
             
-                
-                    
+        
+            
+            
                 
                     
                 
@@ -271,8 +282,6 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
                 
                     
                 
-                    
-                
             
         
             
@@ -280,31 +289,20 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
                 
                     
                 
-                    
-                
             
         
-            
-            
-                
-                    
-                
-                    
-                
-            
         
+            </ul>
         
 
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(1)/">解决JNI相关问题(1)</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/">Python模块之feedparser学习</a></p>
         
     </div>
     <div class="nex">
 
-        
-        <p><strong>下一篇</strong> <a href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(3)/">解决JNI相关问题(3)</a></p>
         
     </div>
 </div>
@@ -328,6 +326,8 @@ C++代码:<code class="highlighter-rouge">const char *str = env-&gt;GetStringUTF
                     Content
                 </div>
                 <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
                     
                     <li><a href="#comments">Comments</a></li>
                 </ul>
