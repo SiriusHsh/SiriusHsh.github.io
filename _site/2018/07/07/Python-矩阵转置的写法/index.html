@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（五）</title>
-    <meta name="description" content="  神经网络神经网络神经网络模型如图所示： 一些基础知识：  输入层，输出层，隐含层  观察到，每一层都会再加一项，这一项称为偏置项（bias unit），值为1  在神经网络最后我们仍旧使用逻辑函数（logistic function），但是在这里我们通常称为 sigmoid (logistic) activa...">
+    <title>Python 矩阵转置的写法</title>
+    <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">
+    <link rel="canonical" href="http://localhost:4000/2018/07/07/Python-%E7%9F%A9%E9%98%B5%E8%BD%AC%E7%BD%AE%E7%9A%84%E5%86%99%E6%B3%95/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -129,11 +129,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（五）</h1>
+        <h1>Python 矩阵转置的写法</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-10-21
+                <i class="fa fa-calendar"></i>2018-07-07
             </div>
 
             <div class="label-card">
@@ -154,9 +154,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
     
   
 
@@ -173,8 +171,8 @@
   <i class="fa fa-tags"></i>
   
     
-        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <!--a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a-->
+        <a href="/tag/#Python" title="Tag: Python" rel="tag">Python</a>
     
   
 
@@ -185,44 +183,40 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#神经网络" id="markdown-toc-神经网络">神经网络</a></li>
-  <li><a href="#模型" id="markdown-toc-模型">模型</a></li>
-  <li><a href="#分类问题" id="markdown-toc-分类问题">分类问题</a></li>
-</ul>
+        
+<p>方法一：列表生成式</p>
 
-<h2 id="神经网络">神经网络</h2>
-<p>神经网络模型如图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-1.png" alt="lesson5-1.png" /> <br />
-一些基础知识：</p>
-<ol>
-  <li>输入层，输出层，隐含层</li>
-  <li>观察到，每一层都会再加一项，这一项称为偏置项（bias unit），值为1</li>
-  <li>在神经网络最后我们仍旧使用逻辑函数（logistic function），但是在这里我们通常称为 sigmoid (logistic) activation function，sigmoid激活函数</li>
-  <li>参数$\theta$称为权重（weights）</li>
-</ol>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span><span class="n">a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]]</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">t</span> <span class="o">=</span> <span class="p">[[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">colume</span><span class="p">)]</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">t</span>
+<span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">]]</span>
+</code></pre>
+</div>
 
-<p>$a_0^2,a_1^2,…,a_n^2$称为激活元（activation units）<br />
-$a_i^{(j)}$ = “activation” of unit i in layer j <br />
-$\theta^{(j)}$ = matrix of weights controlling function mapping from layer j to layer j+1<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-2.png" alt="lesson5-2.png" /><br />
-<strong>需要注意的是$\theta^{(j)}等于s_{j+1} * (s_j + 1)$</strong></p>
+<p>方法二：使用Python内置的zip函数</p>
 
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-4.png" alt="lesson5-4.png" /></p>
+<div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span><span class="n">a</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">]]</span>
+<span class="o">&gt;&gt;&gt;</span><span class="n">t</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">))</span>
+<span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">)]</span>
+</code></pre>
+</div>
 
-<p>x可以看成$a^{(1)}$
-于是可以得出：<br />
-$z^{(j)} = \theta^{(j-1)}*a^{(j-1)}$<br />
-$a^{(j)} = g(z^{(j)})$</p>
+<blockquote>
+  <p>知识点补充：在列表前加星号作用是将列表解开成两个独立的参数，传入函数，还有类似的有两个星号，是将字典解开成独立的元素作为形参。</p>
 
-<h2 id="模型">模型</h2>
-<p>神经网络通过一层一层的隐含层，以及每一个$\theta$，可以将简单的初始输入表示成复杂的函数。<br />
-如图所示：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-5.png" alt="lesson5-5.png" /></p>
+  <div class="language-python highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
+ 
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="c">#equals to print add(4, 3)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">'a'</span> <span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s">'b'</span> <span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+<span class="k">print</span> <span class="n">add</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+<span class="c">#equals to print add(4, 3)</span>
+</code></pre>
+  </div>
 
-<h2 id="分类问题">分类问题</h2>
-<p>将神经网络应用到神经网络中。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson5-6.png" alt="lesson5-6.png" /></p>
+</blockquote>
 
 
         </article>
@@ -234,12 +228,60 @@ $a^{(j)} = g(z^{(j)})$</p>
             
                 
                     
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
                         
                         <h2 id="similar_posts">Similar Posts</h2>
                         <ul>
                         
                         <li class="relatedPost">
-                            <a href="/2018/08/12/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/">逻辑回归小结
+                            <a href="/2018/07/09/Python-iter%E6%93%8D%E4%BD%9C/">Python iter操作
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/07/05/leetcode-NO.53-Kadane's-algorithm/">leetcode NO.53 Kadane's algorithm
                             
                             </a>
                         </li>
@@ -255,7 +297,7 @@ $a^{(j)} = g(z^{(j)})$</p>
                     
                         
                         <li class="relatedPost">
-                            <a href="/2018/08/11/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B0%8F%E7%BB%93/">线性回归小结
+                            <a href="/2018/05/28/spyder%E4%BB%A3%E7%A0%81%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/">spyder代码自动补全
                             
                             </a>
                         </li>
@@ -271,23 +313,7 @@ $a^{(j)} = g(z^{(j)})$</p>
                     
                         
                         <li class="relatedPost">
-                            <a href="/2018/08/11/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%B0%8F%E7%BB%93/">梯度下降小结
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
-                
-            
-        
-            
-            
-                
-                    
-                        
-                        <li class="relatedPost">
-                            <a href="/2018/08/10/%E7%9F%A9%E9%98%B5%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E5%A5%87%E5%BC%82%E5%80%BC%E5%88%86%E8%A7%A3-PCA/">矩阵特征分解，奇异值分解，PCA
+                            <a href="/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/">Python模块之feedparser学习
                             
                             </a>
                         </li>
@@ -305,42 +331,6 @@ $a^{(j)} = g(z^{(j)})$</p>
             
         
             
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
-            
-        
-            
-            
-                
-                    
-                
             
         
         
@@ -350,13 +340,13 @@ $a^{(j)} = g(z^{(j)})$</p>
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/10/11/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%9B%9B/">Ng机器学习--课程笔记（四）</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/07/05/leetcode-NO.53-Kadane's-algorithm/">leetcode NO.53 Kadane's algorithm</a></p>
         
     </div>
     <div class="nex">
 
         
-        <p><strong>下一篇</strong> <a href="/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">Ng机器学习--课程笔记（六）</a></p>
+        <p><strong>下一篇</strong> <a href="/2018/07/09/Python-iter%E6%93%8D%E4%BD%9C/">Python iter操作</a></p>
         
     </div>
 </div>

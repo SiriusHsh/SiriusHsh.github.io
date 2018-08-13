@@ -5,9 +5,121 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 05 Jul 2018 21:52:29 +0800</pubDate>
-    <lastBuildDate>Thu, 05 Jul 2018 21:52:29 +0800</lastBuildDate>
+    <pubDate>Sun, 12 Aug 2018 19:38:42 +0800</pubDate>
+    <lastBuildDate>Sun, 12 Aug 2018 19:38:42 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>逻辑回归小结</title>
+        <description>
+​	逻辑回归是一个分类算法，它可以处理二元分类以及多元分类。虽然它名字里面有“回归”两个字，却不是一个回归算法。那为什么有“回归”这个误导性的词呢？个人认为，虽然逻辑回归是分类模型，但是它的原理里面却残留着回归模型的影子，本文对逻辑回归原理做一个总结。
+
+</description>
+        <pubDate>Sun, 12 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/12/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/12/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>线性回归小结</title>
+        <description>线性回归可以说是机器学习中最基本的问题类型了，这里就对线性回归的原理和算法做一个小结。
+
+</description>
+        <pubDate>Sat, 11 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/11/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B0%8F%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/11/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B0%8F%E7%BB%93/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>梯度下降小结</title>
+        <description>
+在求解机器学习算法的模型参数，即无约束优化问题时，梯度下降（Gradient Descent）是最常采用的方法之一，另一种常用的方法是最小二乘法。这里就对梯度下降法做一个完整的总结。
+
+</description>
+        <pubDate>Sat, 11 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/11/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%B0%8F%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/11/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%B0%8F%E7%BB%93/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>矩阵特征分解，奇异值分解，PCA</title>
+        <description>
+</description>
+        <pubDate>Fri, 10 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/10/%E7%9F%A9%E9%98%B5%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E5%A5%87%E5%BC%82%E5%80%BC%E5%88%86%E8%A7%A3-PCA/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/10/%E7%9F%A9%E9%98%B5%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E5%A5%87%E5%BC%82%E5%80%BC%E5%88%86%E8%A7%A3-PCA/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>Python iter操作</title>
+        <description>
+</description>
+        <pubDate>Mon, 09 Jul 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/07/09/Python-iter%E6%93%8D%E4%BD%9C/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/07/09/Python-iter%E6%93%8D%E4%BD%9C/</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>Python 矩阵转置的写法</title>
+        <description>
+</description>
+        <pubDate>Sat, 07 Jul 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/07/07/Python-%E7%9F%A9%E9%98%B5%E8%BD%AC%E7%BD%AE%E7%9A%84%E5%86%99%E6%B3%95/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/07/07/Python-%E7%9F%A9%E9%98%B5%E8%BD%AC%E7%BD%AE%E7%9A%84%E5%86%99%E6%B3%95/</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>leetcode NO.53 Kadane's algorithm</title>
+        <description>
+</description>
+        <pubDate>Thu, 05 Jul 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/07/05/leetcode-NO.53-Kadane's-algorithm/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/07/05/leetcode-NO.53-Kadane's-algorithm/</guid>
+        
+        <category>LeetCode</category>
+        
+        <category>Python</category>
+        
+        
+        <category>刷题</category>
+        
+      </item>
     
       <item>
         <title>spyder代码自动补全</title>
@@ -51,123 +163,6 @@
         
         
         <category>问题解决</category>
-        
-      </item>
-    
-      <item>
-        <title>Matplotlib使用</title>
-        <description>
-</description>
-        <pubDate>Wed, 25 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/25/matplotlib%E4%BD%BF%E7%94%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/25/matplotlib%E4%BD%BF%E7%94%A8/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>常见的排序算法</title>
-        <description>
-</description>
-        <pubDate>Wed, 11 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/11/%E5%B8%B8%E8%A7%81%E7%9A%84%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/11/%E5%B8%B8%E8%A7%81%E7%9A%84%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</guid>
-        
-        <category>算法</category>
-        
-        
-        <category>学习笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>恐怖的二分查找</title>
-        <description>
-</description>
-        <pubDate>Tue, 10 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/10/%E6%81%90%E6%80%96%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/10/%E6%81%90%E6%80%96%E7%9A%84%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</guid>
-        
-        <category>算法</category>
-        
-        
-        <category>学习笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>Python数据结构</title>
-        <description>
-</description>
-        <pubDate>Sat, 10 Mar 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
-        
-        <category>Python</category>
-        
-        <category>数据结构</category>
-        
-        
-        <category>学习笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>Ng机器学习--课程笔记（七）</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#evaluating-a-learning-algorithmmachine-learning-diagnostic&quot; id=&quot;markdown-toc-evaluating-a-learning-algorithmmachine-learning-diagnostic&quot;&gt;Evaluating a learning algorithm/Machine learning diagnostic&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;evaluating-a-learning-algorithmmachine-learning-diagnostic&quot;&gt;Evaluating a learning algorithm/Machine learning diagnostic&lt;/h1&gt;
-在机器学习中会遇到一些训练效果不好的情况，如何衡量算法的好坏，以及如何改进，是很关键的问题。&lt;br /&gt;
-Ng给出了如图所示的一些方法，但是总不能全试吧，浪费时间，于是提出了“诊断”的概念。&lt;br /&gt;
-&lt;img src=&quot;http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-1.png&quot; alt=&quot;lesson7-1.png&quot; /&gt;
-
-</description>
-        <pubDate>Mon, 30 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/</guid>
-        
-        <category>机器学习</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>Ng机器学习--编程作业心得总汇</title>
-        <description>
-</description>
-        <pubDate>Thu, 26 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/</guid>
-        
-        <category>机器学习</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>Ng机器学习--课程笔记（六）</title>
-        <description>
-</description>
-        <pubDate>Wed, 25 Oct 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/</guid>
-        
-        <category>机器学习</category>
-        
-        
-        <category>学习笔记</category>
-        
-        <category>机器学习</category>
         
       </item>
     
