@@ -5,9 +5,43 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 13 Aug 2018 17:51:07 +0800</pubDate>
-    <lastBuildDate>Mon, 13 Aug 2018 17:51:07 +0800</lastBuildDate>
+    <pubDate>Tue, 14 Aug 2018 20:40:08 +0800</pubDate>
+    <lastBuildDate>Tue, 14 Aug 2018 20:40:08 +0800</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>支持向量机（一）线性支持向量机</title>
+        <description>支持向量机(Support Vecor Machine,以下简称SVM)虽然诞生只有短短的二十多年，但是自一诞生便由于它良好的分类性能席卷了机器学习领域，并牢牢压制了神经网络领域好多年。如果不考虑集成学习的算法，不考虑特定的训练数据集，在分类算法中的表现SVM说是排第一估计是没有什么异议的。
+
+SVM是一个二元分类算法，线性分类和非线性分类都支持。经过演进，现在也可以支持多元分类，同时经过扩展，也能应用于回归问题。本系列文章就对SVM的原理做一个总结。本篇的重点是SVM用于线性分类时模型和损失函数优化的一个总结。
+
+</description>
+        <pubDate>Tue, 14 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>感知机原理小结</title>
+        <description>感知机可以说是最古老的分类方法之一了，在1957年就已经提出。今天看来它的分类模型在大多数时候泛化能力不强，但是它的原理却值得好好研究。因为研究透了感知机模型，学习支持向量机的话会降低不少难度。同时如果研究透了感知机模型，再学习神经网络，深度学习，也是一个很好的起点。这里对感知机的原理做一个小结。
+
+</description>
+        <pubDate>Mon, 13 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/</guid>
+        
+        <category>机器学习</category>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
     
       <item>
         <title>交叉验证（cross validation）原理小结</title>
@@ -135,36 +169,6 @@
         
         
         <category>刷题</category>
-        
-      </item>
-    
-      <item>
-        <title>spyder代码自动补全</title>
-        <description>
-</description>
-        <pubDate>Mon, 28 May 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/05/28/spyder%E4%BB%A3%E7%A0%81%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/05/28/spyder%E4%BB%A3%E7%A0%81%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8/</guid>
-        
-        <category>Python</category>
-        
-        
-        <category>问题解决</category>
-        
-      </item>
-    
-      <item>
-        <title>Python模块之feedparser学习</title>
-        <description>
-</description>
-        <pubDate>Sat, 26 May 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/05/26/Python%E6%A8%A1%E5%9D%97%E4%B9%8Bfeedparser%E5%AD%A6%E4%B9%A0/</guid>
-        
-        <category>Python</category>
-        
-        
-        <category>学习笔记</category>
         
       </item>
     
