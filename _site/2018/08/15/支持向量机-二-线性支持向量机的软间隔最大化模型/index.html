@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>支持向量机（二）线性支持向量机的软间隔最大化模型</title>
+    <meta name="description" content="在支持向量机原理(一) 线性支持向量机中，我们对线性可分SVM的模型和损失函数优化做了总结。最后我们提到了有时候不能线性可分的原因是线性数据集里面多了少量的异常点，由于这些异常点导致了数据集不能线性可分，本篇就对线性支持向量机如何处理这些异常点的原理方法做一个总结。">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="http://localhost:4000/2018/08/15/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%BA%8C-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%E7%9A%84%E8%BD%AF%E9%97%B4%E9%9A%94%E6%9C%80%E5%A4%A7%E5%8C%96%E6%A8%A1%E5%9E%8B/">
+    <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
+
+
+    <script>
+    // 百度统计代码
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?11d0a7524a357b826a143e592f616077;";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">SiriusHsh</a>
+        <small>记录思考，整理人生</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>支持向量机（二）线性支持向量机的软间隔最大化模型</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-08-15
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>HSH
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
+        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#1-线性分类svm面临过的问题" id="markdown-toc-1-线性分类svm面临过的问题">1. 线性分类SVM面临过的问题</a></li>
+  <li><a href="#2-线性分类svm的软间隔最大化" id="markdown-toc-2-线性分类svm的软间隔最大化">2. 线性分类SVM的软间隔最大化</a></li>
+  <li><a href="#3-线性分类svm的软间隔最大化目标函数的优化" id="markdown-toc-3-线性分类svm的软间隔最大化目标函数的优化">3. 线性分类SVM的软间隔最大化目标函数的优化</a></li>
+  <li><a href="#4-软间隔最大化时的支持向量" id="markdown-toc-4-软间隔最大化时的支持向量">4. 软间隔最大化时的支持向量</a></li>
+  <li><a href="#5-软间隔最大化的线性可分svm的算法过程" id="markdown-toc-5-软间隔最大化的线性可分svm的算法过程">5. 软间隔最大化的线性可分SVM的算法过程</a></li>
+  <li><a href="#6-合页损失函数" id="markdown-toc-6-合页损失函数">6. 合页损失函数</a></li>
+</ul>
+<p>在<a href="https://siriushsh.github.io/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">支持向量机原理(一) 线性支持向量机</a>中，我们对线性可分SVM的模型和损失函数优化做了总结。最后我们提到了有时候不能线性可分的原因是线性数据集里面多了少量的异常点，由于这些异常点导致了数据集不能线性可分，本篇就对线性支持向量机如何处理这些异常点的原理方法做一个总结。</p>
+
+<h2 id="1-线性分类svm面临过的问题">1. 线性分类SVM面临过的问题</h2>
+
+<p>有时候本来数据的确是可分的，也就是说可以用 线性分类SVM的学习方法来求解，但是却因为混入了异常点，导致不能线性可分，比如下图，本来数据是可以按下面的实线来做超平面分离的，可以由于一个橙色和一个蓝色的异常点导致我们没法按照上一篇<a href="https://siriushsh.github.io/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">线性支持向量机</a>中的方法来分类。</p>
+
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/1042406-20161125104106409-1177897648.png" alt="" /></p>
+
+<p>另外一种情况没有这么糟糕到不可分，但是会严重影响我们模型的泛化预测效果，比如下图，本来如果我们不考虑异常点，SVM的超平面应该是下图中的红色线所示，但是由于有一个蓝色的异常点，导致我们学习到的超平面是下图中的粗虚线所示，这样会严重影响我们的分类模型预测效果。</p>
+
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/1042406-20161125104737206-364720074.png" alt="" /></p>
+
+<p>如何解决这些问题呢？SVM引入了软间隔最大化的方法来解决。</p>
+
+<h2 id="2-线性分类svm的软间隔最大化">2. 线性分类SVM的软间隔最大化</h2>
+
+<p>所谓的软间隔，是相对于硬间隔说的，我们可以认为上一篇线性分类SVM的学习方法属于硬间隔最大化。</p>
+
+<p>回顾下硬间隔最大化的条件：</p>
+
+<script type="math/tex; mode=display">min\;\; \frac{1}{2}||w||_2^2  \;\; s.t \;\; y_i(w^Tx_i + b)  \geq 1 (i =1,2,...m)</script>
+
+<p>接着我们再看如何可以软间隔最大化呢？</p>
+
+<p>SVM对训练集里面的每个样本$(x_i,y_i)$引入了一个松弛变量$\xi_i \geq 0$,使函数间隔加上松弛变量大于等于1，也就是说：</p>
+
+<script type="math/tex; mode=display">y_i(w\bullet x_i +b) \geq 1- \xi_i</script>
+
+<p>对比硬间隔最大化，可以看到我们对样本到超平面的函数距离的要求放松了，之前是一定要大于等于1，现在只需要加上一个大于等于0的松弛变量能大于等于1就可以了。当然，松弛变量不能白加，这是有成本的，每一个松弛变量$\xi_i$, 对应了一个代价$\xi_i$，这个就得到了我们的软间隔最大化的SVM学习条件如下：</p>
+
+<script type="math/tex; mode=display">min\;\; \frac{1}{2}||w||_2^2 +C\sum\limits_{i=1}^{m}\xi_i</script>
+
+<script type="math/tex; mode=display">s.t.  \;\; y_i(w^Tx_i + b)  \geq 1 - \xi_i \;\;(i =1,2,...m)</script>
+
+<script type="math/tex; mode=display">\xi_i \geq 0 \;\;(i =1,2,...m)</script>
+
+<p>这里,$C&gt;0$为惩罚参数，可以理解为我们一般回归和分类问题正则化时候的参数。$C$越大，对误分类的惩罚越大，$C$越小，对误分类的惩罚越小。</p>
+
+<p>也就是说，我们希望$\frac{1}{2}||w||_2^2$尽量小，误分类的点尽可能的少。$C$是协调两者关系的正则化惩罚系数。在实际应用中，需要调参来选择。</p>
+
+<p>这个目标函数的优化和上一篇的线性可分SVM的优化方式类似，我们下面就来看看怎么对线性分类SVM的软间隔最大化来进行学习优化。</p>
+
+<h2 id="3-线性分类svm的软间隔最大化目标函数的优化">3. 线性分类SVM的软间隔最大化目标函数的优化</h2>
+
+<p>和线性可分SVM的优化方式类似，我们首先将软间隔最大化的约束问题用拉格朗日函数转化为无约束问题如下：</p>
+
+<script type="math/tex; mode=display">L(w,b,\xi,\alpha,\mu) = \frac{1}{2}||w||_2^2 +C\sum\limits_{i=1}^{m}\xi_i - \sum\limits_{i=1}^{m}\alpha_i[y_i(w^Tx_i + b) - 1 + \xi_i] - \sum\limits_{i=1}^{m}\mu_i\xi_i</script>
+
+<p>其中$ \mu_i \geq 0$, $\alpha_i \geq 0$,均为拉格朗日系数。</p>
+
+<p>也就是说，我们现在要优化的目标函数是：</p>
+
+<script type="math/tex; mode=display">\underbrace{min}_{w,b,\xi}\; \underbrace{max}_{\alpha_i \geq 0, \mu_i \geq 0,} L(w,b,\alpha, \xi,\mu)</script>
+
+<p>这个优化目标也满足KKT条件，也就是说，我们可以通过拉格朗日对偶将我们的优化问题转化为等价的对偶问题来求解如下：</p>
+
+<script type="math/tex; mode=display">\underbrace{max}_{\alpha_i \geq 0, \mu_i \geq 0,} \; \underbrace{min}_{w,b,\xi}\; L(w,b,\alpha, \xi,\mu)</script>
+
+<p>我们可以先求优化函数对于$w$,$ b$, $\xi$的极小值, 接着再求拉格朗日乘子$\alpha$和 $\mu$的极大值。</p>
+
+<p>首先我们来求优化函数对于$w$,$ b$, $\xi$的极小值，这个可以通过求偏导数求得：</p>
+
+<script type="math/tex; mode=display">\frac{\partial L}{\partial w} = 0 \;\Rightarrow w = \sum\limits_{i=1}^{m}\alpha_iy_ix_i</script>
+
+<script type="math/tex; mode=display">\frac{\partial L}{\partial b} = 0 \;\Rightarrow \sum\limits_{i=1}^{m}\alpha_iy_i = 0</script>
+
+<script type="math/tex; mode=display">\frac{\partial L}{\partial \xi} = 0 \;\Rightarrow C- \alpha_i - \mu_i = 0</script>
+
+<p>好了，我们可以利用上面的三个式子去消除$w$和$b$了。
+<script type="math/tex">% <![CDATA[
+\begin{align} L(w,b,\xi,\alpha,\mu) & = \frac{1}{2}||w||_2^2 +C\sum\limits_{i=1}^{m}\xi_i - \sum\limits_{i=1}^{m}\alpha_i[y_i(w^Tx_i + b) - 1 + \xi_i] - \sum\limits_{i=1}^{m}\mu_i\xi_i 　\\&= \frac{1}{2}||w||_2^2 - \sum\limits_{i=1}^{m}\alpha_i[y_i(w^Tx_i + b) - 1 + \xi_i] + \sum\limits_{i=1}^{m}\alpha_i\xi_i \\& = \frac{1}{2}||w||_2^2 - \sum\limits_{i=1}^{m}\alpha_i[y_i(w^Tx_i + b) - 1] \\& = \frac{1}{2}w^Tw-\sum\limits_{i=1}^{m}\alpha_iy_iw^Tx_i - \sum\limits_{i=1}^{m}\alpha_iy_ib + \sum\limits_{i=1}^{m}\alpha_i \\& = \frac{1}{2}w^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i -\sum\limits_{i=1}^{m}\alpha_iy_iw^Tx_i - \sum\limits_{i=1}^{m}\alpha_iy_ib + \sum\limits_{i=1}^{m}\alpha_i \\& = \frac{1}{2}w^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i - w^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i - \sum\limits_{i=1}^{m}\alpha_iy_ib + \sum\limits_{i=1}^{m}\alpha_i \\& = - \frac{1}{2}w^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i - \sum\limits_{i=1}^{m}\alpha_iy_ib + \sum\limits_{i=1}^{m}\alpha_i \\& = - \frac{1}{2}w^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i - b\sum\limits_{i=1}^{m}\alpha_iy_i + \sum\limits_{i=1}^{m}\alpha_i \\& = -\frac{1}{2}(\sum\limits_{i=1}^{m}\alpha_iy_ix_i)^T(\sum\limits_{i=1}^{m}\alpha_iy_ix_i) - b\sum\limits_{i=1}^{m}\alpha_iy_i + \sum\limits_{i=1}^{m}\alpha_i \\& = -\frac{1}{2}\sum\limits_{i=1}^{m}\alpha_iy_ix_i^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i - b\sum\limits_{i=1}^{m}\alpha_iy_i + \sum\limits_{i=1}^{m}\alpha_i \\& = -\frac{1}{2}\sum\limits_{i=1}^{m}\alpha_iy_ix_i^T\sum\limits_{i=1}^{m}\alpha_iy_ix_i + \sum\limits_{i=1}^{m}\alpha_i \\& = -\frac{1}{2}\sum\limits_{i=1,j=1}^{m}\alpha_iy_ix_i^T\alpha_jy_jx_j + \sum\limits_{i=1}^{m}\alpha_i \\& = \sum\limits_{i=1}^{m}\alpha_i - \frac{1}{2}\sum\limits_{i=1,j=1}^{m}\alpha_i\alpha_jy_iy_jx_i^Tx_j \end{align} %]]></script></p>
+
+<p>其中，(1)式到(2)式用到了$C- \alpha_i - \mu_i = 0$, (2)式到(3)式合并了同类项，(3)式到(4)式用到了范数的定义$||w||_2^2 =w^Tw$</p>
+
+<p>(4)式到(5)式用到了上面的$w = \sum\limits_{i=1}^{m}\alpha_iy_ix_i​$， (5)式到(6)式把和样本无关的$w^T​$提前，(6)式到(7)式合并了同类项，(7)式到(8)式把和样本无关的$b​$提前，(8)式到(9)式继续用到$w = \sum\limits_{i=1}^{m}\alpha_iy_ix_i​$，（9）式到(10)式用到了向量的转置。由于常量的转置是其本身，所有只有向量$x_i​$被转置，（10）式到(11)式用到了上面的$\sum\limits_{i=1}^{m}\alpha_iy_i = 0​$，（11）式到(12)式使用了(a+b+c+…)(a+b+c+…)=aa+ab+ac+ba+bb+bc+…的乘法运算法则，（12）式到(13)式仅仅是位置的调整。</p>
+
+<p>仔细观察可以发现，这个式子和我们上一篇线性可分SVM的一样。唯一不一样的是约束条件。现在我们看看我们的优化目标的数学形式：</p>
+
+<script type="math/tex; mode=display">\underbrace{ max }_{\alpha} \sum\limits_{i=1}^{m}\alpha_i - \frac{1}{2}\sum\limits_{i=1,j=1}^{m}\alpha_i\alpha_jy_iy_jx_i^Tx_j</script>
+
+<script type="math/tex; mode=display">s.t. \; \sum\limits_{i=1}^{m}\alpha_iy_i = 0</script>
+
+<script type="math/tex; mode=display">C- \alpha_i - \mu_i = 0</script>
+
+<script type="math/tex; mode=display">\alpha_i \geq 0 \;(i =1,2,...,m)</script>
+
+<script type="math/tex; mode=display">\mu_i \geq 0 \;(i =1,2,...,m)</script>
+
+<p>对于$C- \alpha_i - \mu_i = 0$ ， $\alpha_i \geq 0$ ，$\mu_i \geq 0$这3个式子，我们可以消去$\mu_i$，只留下$\alpha_i$，也就是说$0 \leq \alpha_i \leq C$。 同时将优化目标函数变号，求极小值，如下：</p>
+
+<script type="math/tex; mode=display">\underbrace{ min }_{\alpha}  \frac{1}{2}\sum\limits_{i=1,j=1}^{m}\alpha_i\alpha_jy_iy_jx_i^Tx_j - \sum\limits_{i=1}^{m}\alpha_i</script>
+
+<script type="math/tex; mode=display">s.t. \; \sum\limits_{i=1}^{m}\alpha_iy_i = 0</script>
+
+<script type="math/tex; mode=display">0 \leq \alpha_i \leq C</script>
+
+<p>这就是软间隔最大化时的线性可分SVM的优化目标形式，和上一篇的硬间隔最大化的线性可分SVM相比，我们仅仅是多了一个约束条件$0 \leq \alpha_i \leq C$。我们依然可以通过SMO算法来求上式极小化时对应的$\alpha$向量就可以求出$w$和$b$了。</p>
+
+<h2 id="4-软间隔最大化时的支持向量">4. 软间隔最大化时的支持向量</h2>
+
+<p>在硬间隔最大化时，支持向量比较简单，就是满足$y_i(w^Tx_i + b) -1 =0$就可以了。根据KKT条件中的对偶互补条件$\alpha_{i}^{*}(y_i(w^Tx_i + b) - 1) = 0$，如果$\alpha_{i}^{*}&gt;0$则有$y_i(w^Tx_i + b) =1$ 即点在支持向量上，否则如果$\alpha_{i}^{*}=0$则有$y_i(w^Tx_i + b) \geq 1$，即样本在支持向量上或者已经被正确分类。</p>
+
+<p>在软间隔最大化时，则稍微复杂一些，因为我们对每个样本$(x_i,y_i)$引入了松弛变量$\xi_i$。我们从下图来研究软间隔最大化时支持向量的情况，第i个点到对应类别支持向量的距离为$\frac{\xi_i}{||w||_2}$</p>
+
+<p>根据软间隔最大化时KKT条件中的对偶互补条件$\alpha_{i}^{*}(y_i(w^Tx_i + b) - 1 + \xi_i^{*}) = 0$我们有：</p>
+
+<ul>
+  <li>如果$\alpha = 0$,那么$y_i(w^Tx_i + b) - 1 \geq 0$,即样本在间隔边界上或者已经被正确分类。如图中所有远离间隔边界的点。</li>
+  <li>如果$0 &lt; \alpha &lt; C$,那么$\xi_i = 0 ,\;\; y_i(w^Tx_i + b) - 1 =  0$,即点在间隔边界上。</li>
+  <li>如果$\alpha = C$，说明这是一个可能比较异常的点，需要检查此时$\xi_i$
+    <ul>
+      <li>如果$0 \leq \xi_i \leq 1$,那么点被正确分类，但是却在超平面和自己类别的间隔边界之间。如图中的样本2和4</li>
+      <li>如果$\xi_i =1$,那么点在分离超平面上，无法被正确分类</li>
+      <li>如果$\xi_i &gt; 1$,那么点在超平面的另一侧，也就是说，这个点不能被正常分类。如图中的样本1和3.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/1042406-20161125133202346-307657619.jpg" alt="" /></p>
+
+<h2 id="5-软间隔最大化的线性可分svm的算法过程">5. 软间隔最大化的线性可分SVM的算法过程</h2>
+
+<p>这里我们对软间隔最大化时的线性可分SVM的算法过程做一个总结。</p>
+
+<p>输入是线性可分的m个样本${(x_1,y_1), (x_2,y_2), …, (x_m,y_m),}$,其中$x$为n维特征向量。$y$为二元输出，值为1，或者-1.</p>
+
+<p>输出是分离超平面的参数$w^{*}$和$b^{*}$和分类决策函数。</p>
+
+<p>算法过程如下：</p>
+
+<p>1）选择一个惩罚系数$C&gt;0$, 构造约束优化问题</p>
+
+<script type="math/tex; mode=display">\underbrace{ min }_{\alpha}  \frac{1}{2}\sum\limits_{i=1,j=1}^{m}\alpha_i\alpha_jy_iy_jx_i^Tx_j - \sum\limits_{i=1}^{m}\alpha_i</script>
+
+<script type="math/tex; mode=display">s.t. \; \sum\limits_{i=1}^{m}\alpha_iy_i = 0</script>
+
+<script type="math/tex; mode=display">0 \leq \alpha_i \leq C</script>
+
+<p>2）用SMO算法求出上式最小时对应的$\alpha$向量的值$\alpha^{*}$向量.</p>
+
+<p>3) 计算$w^{*} = \sum\limits_{i=1}^{m}\alpha_i^{*}y_ix_i$</p>
+
+<p>4) 找出所有的S个支持向量,即满足$0 &lt; \alpha_s &lt; C$对应的样本$(x_s,y_s)$，通过$ y_s(\sum\limits_{i=1}^{S}\alpha_iy_ix_i^Tx_s+b) = 1$，计算出每个支持向量$(x_x, y_s)$对应的$b_s^{*}$,计算出这些$b_s^{*} = y_s - \sum\limits_{i=1}^{S}\alpha_iy_ix_i^Tx_s$. 所有的$b_s^{*}$对应的平均值即为最终的$b^{*} = \frac{1}{S}\sum\limits_{i=1}^{S}b_s^{*}$</p>
+
+<p>这样最终的分类超平面为：$w^{*} \bullet x + b^{*} = 0$，最终的分类决策函数为：$f(x) = sign(w^{*} \bullet x + b^{*})$</p>
+
+<h2 id="6-合页损失函数">6. 合页损失函数</h2>
+
+<p>线性支持向量机还有另外一种解释如下：</p>
+
+<script type="math/tex; mode=display">\underbrace{ min}_{w, b}[1-y_i(w \bullet x + b)]_{+} + \lambda ||w||_2^2</script>
+
+<p>其中$L(y(w \bullet x + b)) = [1-y_i(w \bullet x + b)]<em>{+}$称为合页损失函数(hinge loss function)，下标+表示为：
+<script type="math/tex">% <![CDATA[
+[z]_{+}= \begin{cases} z & {z >0} \\ 0& {z\leq 0} \end{cases} %]]></script>
+也就是说，如果点被正确分类，且函数间隔大于1，损失是0，否则损失是$1-y(w \bullet x + b)$,如下图中的绿线。我们在下图还可以看出其他各种模型损失和函数间隔的关系：对于0-1损失函数，如果正确分类，损失是0，误分类损失1， 如下图黑线，可见0-1损失函数是不可导的。对于感知机模型，感知机的损失函数是$[-y_i(w \bullet x + b)]</em>{+}$，这样当样本被正确分类时，损失是0，误分类时，损失是$-y_i(w \bullet x + b)$，如下图紫线。对于逻辑回归之类和最大熵模型对应的对数损失，损失函数是$log[1+exp(-y(w \bullet x + b))]$, 如下图红线所示。</p>
+
+<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/1042406-20161125140636518-992065349.png" alt="" /></p>
+
+<p>线性可分SVM通过软间隔最大化，可以解决线性数据集带有异常点时的分类处理，但是现实生活中的确有很多数据不是线性可分的，这些线性不可分的数据也不是去掉异常点就能处理这么简单。那么SVM怎么能处理中这样的情况呢？我们在下一篇就来讨论线性不可分SVM和核函数的原理。</p>
+
+<hr />
+
+<p>参考文献：http://www.cnblogs.com/pinard/p/6100722.html</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8A/">决策树算法原理（上）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/SMO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">SMO算法原理
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%89-%E7%BA%BF%E6%80%A7%E4%B8%8D%E5%8F%AF%E5%88%86%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%E4%B8%8E%E6%A0%B8%E5%87%BD%E6%95%B0/">支持向量机（三）线性不可分支持向量机与核函数
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8B/">决策树算法原理（下）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">支持向量机（一）线性支持向量机
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">感知机原理小结
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/08/14/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%80-%E7%BA%BF%E6%80%A7%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">支持向量机（一）线性支持向量机</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8B/">决策树算法原理（下）</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+             本站记录我在学习生活的点点滴滴。 
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SiriusHsh" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:siriushsh@foxmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>   
+            <a href="https://www.zhihu.com/people/SiriusHsh" title="Zhihu"><i class="iconfont icon-daoruzhihu"></i></a>      
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

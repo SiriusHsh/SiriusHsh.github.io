@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（六）</title>
+    <title>SMO算法原理</title>
     <meta name="description" content="">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/10/25/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E5%85%AD/">
+    <link rel="canonical" href="http://localhost:4000/2018/08/15/SMO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -131,11 +131,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（六）</h1>
+        <h1>SMO算法原理</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-10-25
+                <i class="fa fa-calendar"></i>2018-08-15
             </div>
 
             <div class="label-card">
@@ -155,8 +155,6 @@
 <span class="categories">
   <i class="fa fa-th-list"></i>
   
-    
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
     
         <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
     
@@ -187,100 +185,7 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#neural-networks" id="markdown-toc-neural-networks">Neural Networks</a>    <ul>
-      <li><a href="#1cost-function" id="markdown-toc-1cost-function">1.Cost Function</a></li>
-      <li><a href="#2back-propagation反向传播算法" id="markdown-toc-2back-propagation反向传播算法">2.back propagation（反向传播算法）</a></li>
-      <li><a href="#3bp算法的实现" id="markdown-toc-3bp算法的实现">3.BP算法的实现</a></li>
-      <li><a href="#4gradient-checking梯度检验" id="markdown-toc-4gradient-checking梯度检验">4.Gradient Checking（梯度检验）</a></li>
-      <li><a href="#5random-initialization随机初始化" id="markdown-toc-5random-initialization随机初始化">5.Random Initialization（随机初始化）</a></li>
-      <li><a href="#6总结" id="markdown-toc-6总结">6.总结</a></li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="neural-networks">Neural Networks</h1>
-<h2 id="1cost-function">1.Cost Function</h2>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-1.png" alt="lesson6-1.png" /><br />
-对网络中的一些参数说明：<br />
-L:网络总层数<br />
-$s_l$:l层神经元数（不包括偏置元 bias unit）<br />
-K:输出神经元数<br />
-复习一下，逻辑回归的损失函数：<br />
-$J(\theta) = - \frac {1}{m} \displaystyle \sum_{i=1}^{m} [y^{(i)} * log(h_\theta(x^{(i)})) + (1- y^{(i)}) * log(1- h_\theta(x^{(i)}))] + \frac {\lambda}{2m} \displaystyle \sum_{j=1}^{n}\theta_j^2$ <br />
-对于神经网络，其损失函数更为复杂一点：<br />
-$J(\theta) = - \frac {1}{m} \displaystyle \sum_{i=1}^{m} \displaystyle \sum_{k=1}^K[y_k^{(i)} * log((h_\theta(x^{(i)}))<em>k) + (1- y_k^{(i)}) * log(1- (h</em>\theta(x^{(i)}))<em>k)] + \frac {\lambda}{2m} \displaystyle \sum</em>{l=1}^{L-1} \displaystyle \sum_{i=1}^{s_l}  \displaystyle \sum_{j=1}^{s_{l+1}} (\theta_{j,i}^{(l)})^2$<br />
-注：  i,j都是从1开始，因为index等于0的项不参与到正则化中。</p>
-<h2 id="2back-propagation反向传播算法">2.back propagation（反向传播算法）</h2>
-<p>反向传播算法是应用于神经网络中，用于降低损失函数；类似于应用在线性回归和逻辑回归的梯度下降算法。<br />
-BP算法流程：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-2.png" alt="lesson6-2.png" /></p>
-
-<blockquote>
-  <p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-3.png" alt="lesson6-3.png" />这张图还不太理解</p>
-</blockquote>
-
-<p>反向传播算法，故名意思，计算$\delta$是倒着来的。 <br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-4.png" alt="lesson6-4.png" />对于如图所示的网络，
-最后一层的$\delta$很好计算，$\delta_1^{(4)} = y^{(i)} - a_1^{(4)}$。</p>
-
-<p>待求的$\delta_2^{(2)} = \theta^{(2)}<em>{12}*\delta^{(3)}_1+\theta^{(2)}</em>{22}*\delta^{(3)}_2$</p>
-
-<p>同理可以求出$\delta^{(3)}<em>1 = \theta</em>{11}^{(3)}<em>\delta^{(4)}_1$和$\delta^{(3)}_2 = \theta^{(3)}_{12}</em>\delta^{(4)}_1$</p>
-
-<h2 id="3bp算法的实现">3.BP算法的实现</h2>
-<p>使用最优化算法步骤和逻辑回归、线性回归一样，都是先定义损失函数，然后利用fminunc函数进行最优化。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-5.png" alt="lesson6-5.png" /><br />
-有一点不同，thetaVec是所有$\theta$的总和，所以需要在函数内部进行还原。 
-转换过程：</p>
-<div class="language-matlab highlighter-rouge"><pre class="highlight"><code><span class="n">thetaVector</span> <span class="o">=</span> <span class="p">[</span><span class="n">Theta1</span><span class="p">(:);</span> <span class="n">Theta2</span><span class="p">(:);</span> <span class="n">Theta3</span><span class="p">(:);</span> <span class="p">]</span>
-<span class="n">deltaVector</span> <span class="o">=</span> <span class="p">[</span><span class="n">D1</span><span class="p">(:);</span> <span class="n">D2</span><span class="p">(:);</span> <span class="n">D3</span><span class="p">(:);</span> <span class="p">]</span>
-</code></pre>
-</div>
-
-<pre><code class="language-matlba">%suppose Theta1 is 10x11, Theta2 is 10x11 and Theta3 is 1x11
-Theta1 = reshape(thetaVector(1:110),10,11)
-Theta2 = reshape(thetaVector(111:220),10,11)
-Theta3 = reshape(thetaVector(221:231),1,11)
-</code></pre>
-
-<h2 id="4gradient-checking梯度检验">4.Gradient Checking（梯度检验）</h2>
-
-<p>梯度检验由于确保BP算法准确的工作了。<br />
-BP算法得到的Dvec与梯度检验算法得到的gradApprox进行比较<br />
-通过如下近似的计算方法：<br />
-<img src="i`http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-7.png" alt="lesson6-7.png" /><br />
-在octave中代码实现：</p>
-
-<div class="language-matlab highlighter-rouge"><pre class="highlight"><code><span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">;</span>
-<span class="k">for</span> <span class="nb">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">,</span>
-  <span class="n">thetaPlus</span> <span class="o">=</span> <span class="n">theta</span><span class="p">;</span>
-  <span class="n">thetaPlus</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="o">+=</span> <span class="n">epsilon</span><span class="p">;</span>
-  <span class="n">thetaMinus</span> <span class="o">=</span> <span class="n">theta</span><span class="p">;</span>
-  <span class="n">thetaMinus</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="o">-=</span> <span class="n">epsilon</span><span class="p">;</span>
-  <span class="n">gradApprox</span><span class="p">(</span><span class="nb">i</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">J</span><span class="p">(</span><span class="n">thetaPlus</span><span class="p">)</span> <span class="o">-</span> <span class="n">J</span><span class="p">(</span><span class="n">thetaMinus</span><span class="p">))/(</span><span class="mi">2</span><span class="o">*</span><span class="n">epsilon</span><span class="p">)</span>
-<span class="k">end</span><span class="p">;</span>
-</code></pre>
-</div>
-
-<p>确保gradApprox ≈ deltaVector</p>
-
-<h2 id="5random-initialization随机初始化">5.Random Initialization（随机初始化）</h2>
-<p>对于神经网络，theta不能默认为0，否则会出现叫做对称现象的状况（Symmetry breaking).<br />
-octave实现代码如下：</p>
-
-<div class="language-matlab highlighter-rouge"><pre class="highlight"><code><span class="c1">%If the dimensions of Theta1 is 10x11, Theta2 is 10x11 and Theta3 is 1x11.</span>
-
-<span class="n">Theta1</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">INIT_EPSILON</span><span class="p">)</span> <span class="o">-</span> <span class="n">INIT_EPSILON</span><span class="p">;</span>
-<span class="n">Theta2</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">INIT_EPSILON</span><span class="p">)</span> <span class="o">-</span> <span class="n">INIT_EPSILON</span><span class="p">;</span>
-<span class="n">Theta3</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">INIT_EPSILON</span><span class="p">)</span> <span class="o">-</span> <span class="n">INIT_EPSILON</span><span class="p">;</span>
-
-</code></pre>
-</div>
-
-<h2 id="6总结">6.总结</h2>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson6-8.png" alt="lesson6-8.png" /></p>
-
+        
         </article>
         <hr>
 
@@ -296,22 +201,6 @@ octave实现代码如下：</p>
                         
                         <li class="relatedPost">
                             <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8A/">决策树算法原理（上）
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
-                
-            
-        
-            
-            
-                
-                    
-                        
-                        <li class="relatedPost">
-                            <a href="/2018/08/15/SMO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">SMO算法原理
                             
                             </a>
                         </li>
@@ -389,6 +278,22 @@ octave实现代码如下：</p>
             
                 
                     
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">感知机原理小结
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
                 
             
         
@@ -420,13 +325,13 @@ octave实现代码如下：</p>
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/10/21/Ng%E6%9C%BA%E5%99%A8-%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%BA%94/">Ng机器学习--课程笔记（五）</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/08/15/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%89-%E7%BA%BF%E6%80%A7%E4%B8%8D%E5%8F%AF%E5%88%86%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%E4%B8%8E%E6%A0%B8%E5%87%BD%E6%95%B0/">支持向量机（三）线性不可分支持向量机与核函数</a></p>
         
     </div>
     <div class="nex">
 
         
-        <p><strong>下一篇</strong> <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇</a></p>
+        <p><strong>下一篇</strong> <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8A/">决策树算法原理（上）</a></p>
         
     </div>
 </div>

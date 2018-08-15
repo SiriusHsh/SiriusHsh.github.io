@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/page2/">
+    <link rel="canonical" href="http://localhost:4000/page7/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -126,11 +126,11 @@
             
               <li>
                 <h2>
-                  <a class="post-link" href="/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">感知机原理小结</a>
+                  <a class="post-link" href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(2)/">解决JNI相关问题(2)</a>
                 </h2>
                 <div class="label">
                     <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-13
+                        <i class="fa fa-calendar"></i>2016-09-04
                     </div>
                     <div class="label-card">
                         <i class="fa fa-user"></i>HSH
@@ -149,7 +149,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#问题解决" title="Category: 问题解决" rel="category">问题解决</a>
     
   
 
@@ -166,7 +166,9 @@
   <i class="fa fa-tags"></i>
   
     
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <a href="/tag/#Java" title="Tag: Java" rel="tag">Java</a>&nbsp;
+    
+        <a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a>
     
   
 
@@ -175,23 +177,26 @@
                     </div>
                 </div>
                 <div class="excerpt">
-                    <p>感知机可以说是最古老的分类方法之一了，在1957年就已经提出。今天看来它的分类模型在大多数时候泛化能力不强，但是它的原理却值得好好研究。因为研究透了感知机模型，学习支持向量机的话会降低不少难度。同时如果研究透了感知机模型，再学习神经网络，深度学习，也是一个很好的起点。这里对感知机的原理做一个小结。</p>
+                    <ul id="markdown-toc">
+  <li><a href="#本篇主要讲述jni中getstringutfchars方法的用法" id="markdown-toc-本篇主要讲述jni中getstringutfchars方法的用法">本篇主要讲述JNI中GetStringUTFChars()方法的用法。</a></li>
+</ul>
+<h3 id="本篇主要讲述jni中getstringutfchars方法的用法">本篇主要讲述JNI中GetStringUTFChars()方法的用法。</h3>
 
 
                 </div>
                 <div class="read-all">
-                    <a  href="/2018/08/13/%E6%84%9F%E7%9F%A5%E6%9C%BA%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/"><i class="fa fa-newspaper-o"></i>Read All</a>
+                    <a  href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(2)/"><i class="fa fa-newspaper-o"></i>Read All</a>
                 </div>
                 <hr>
               </li>
             
               <li>
                 <h2>
-                  <a class="post-link" href="/2018/08/13/%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81-cross-validation-%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">交叉验证（cross validation）原理小结</a>
+                  <a class="post-link" href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(1)/">解决JNI相关问题(1)</a>
                 </h2>
                 <div class="label">
                     <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-13
+                        <i class="fa fa-calendar"></i>2016-09-04
                     </div>
                     <div class="label-card">
                         <i class="fa fa-user"></i>HSH
@@ -210,7 +215,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#问题解决" title="Category: 问题解决" rel="category">问题解决</a>
     
   
 
@@ -227,7 +232,9 @@
   <i class="fa fa-tags"></i>
   
     
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <a href="/tag/#JNI" title="Tag: JNI" rel="tag">JNI</a>&nbsp;
+    
+        <a href="/tag/#JAVA" title="Tag: JAVA" rel="tag">JAVA</a>
     
   
 
@@ -236,24 +243,31 @@
                     </div>
                 </div>
                 <div class="excerpt">
-                    
-<p>交叉验证是在机器学习建立模型和验证模型参数时常用的办法。交叉验证，顾名思义，就是重复的使用数据，把得到的样本数据进行切分，组合为不同的训练集和测试集，用训练集来训练模型，用测试集来评估模型预测的好坏。在此基础上可以得到多组不同的训练集和测试集，某次训练集中的某样本在下次可能成为测试集中的样本，即所谓“交叉”。</p>
+                    <ul id="markdown-toc">
+  <li><a href="#本篇主要讲述" id="markdown-toc-本篇主要讲述">本篇主要讲述：</a></li>
+</ul>
+
+<h2 id="本篇主要讲述">本篇主要讲述：</h2>
+<ul>
+  <li>生成.h文件的正确姿势</li>
+  <li>生成和使用.dll文件的正确姿势</li>
+</ul>
 
 
                 </div>
                 <div class="read-all">
-                    <a  href="/2018/08/13/%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81-cross-validation-%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/"><i class="fa fa-newspaper-o"></i>Read All</a>
+                    <a  href="/2016/09/04/%E8%A7%A3%E5%86%B3JNI%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98(1)/"><i class="fa fa-newspaper-o"></i>Read All</a>
                 </div>
                 <hr>
               </li>
             
               <li>
                 <h2>
-                  <a class="post-link" href="/2018/08/12/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/">逻辑回归小结</a>
+                  <a class="post-link" href="/2016/08/30/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Git学习笔记</a>
                 </h2>
                 <div class="label">
                     <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-12
+                        <i class="fa fa-calendar"></i>2016-08-30
                     </div>
                     <div class="label-card">
                         <i class="fa fa-user"></i>HSH
@@ -272,7 +286,7 @@
   <i class="fa fa-th-list"></i>
   
     
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>
     
   
 
@@ -289,192 +303,9 @@
   <i class="fa fa-tags"></i>
   
     
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <a href="/tag/#学习笔记" title="Tag: 学习笔记" rel="tag">学习笔记</a>&nbsp;
     
-  
-
-</span>
-
-                    </div>
-                </div>
-                <div class="excerpt">
-                    
-<p>​	逻辑回归是一个分类算法，它可以处理二元分类以及多元分类。虽然它名字里面有“回归”两个字，却不是一个回归算法。那为什么有“回归”这个误导性的词呢？个人认为，虽然逻辑回归是分类模型，但是它的原理里面却残留着回归模型的影子，本文对逻辑回归原理做一个总结。</p>
-
-
-                </div>
-                <div class="read-all">
-                    <a  href="/2018/08/12/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/"><i class="fa fa-newspaper-o"></i>Read All</a>
-                </div>
-                <hr>
-              </li>
-            
-              <li>
-                <h2>
-                  <a class="post-link" href="/2018/08/11/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B0%8F%E7%BB%93/">线性回归小结</a>
-                </h2>
-                <div class="label">
-                    <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-11
-                    </div>
-                    <div class="label-card">
-                        <i class="fa fa-user"></i>HSH
-                        
-                    </div>
-                    <div class="label-card">
-                        
-                    </div>
-
-                    <div class="label-card">
-                    
-
-
-<!-- <span class="point">•</span> -->
-<span class="categories">
-  <i class="fa fa-th-list"></i>
-  
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
-    
-  
-
-  <!-- <span class="point">•</span> -->
-</span>
-
-
-                    </div>
-
-                    <div class="label-card">
-                    
-<!-- <span class="point">•</span> -->
-<span class="pageTag">
-  <i class="fa fa-tags"></i>
-  
-    
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
-    
-  
-
-</span>
-
-                    </div>
-                </div>
-                <div class="excerpt">
-                    <p>线性回归可以说是机器学习中最基本的问题类型了，这里就对线性回归的原理和算法做一个小结。</p>
-
-
-                </div>
-                <div class="read-all">
-                    <a  href="/2018/08/11/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B0%8F%E7%BB%93/"><i class="fa fa-newspaper-o"></i>Read All</a>
-                </div>
-                <hr>
-              </li>
-            
-              <li>
-                <h2>
-                  <a class="post-link" href="/2018/08/11/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%B0%8F%E7%BB%93/">梯度下降小结</a>
-                </h2>
-                <div class="label">
-                    <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-11
-                    </div>
-                    <div class="label-card">
-                        <i class="fa fa-user"></i>HSH
-                        
-                    </div>
-                    <div class="label-card">
-                        
-                    </div>
-
-                    <div class="label-card">
-                    
-
-
-<!-- <span class="point">•</span> -->
-<span class="categories">
-  <i class="fa fa-th-list"></i>
-  
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
-    
-  
-
-  <!-- <span class="point">•</span> -->
-</span>
-
-
-                    </div>
-
-                    <div class="label-card">
-                    
-<!-- <span class="point">•</span> -->
-<span class="pageTag">
-  <i class="fa fa-tags"></i>
-  
-    
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
-    
-  
-
-</span>
-
-                    </div>
-                </div>
-                <div class="excerpt">
-                    
-<p>在求解机器学习算法的模型参数，即无约束优化问题时，梯度下降（Gradient Descent）是最常采用的方法之一，另一种常用的方法是最小二乘法。这里就对梯度下降法做一个完整的总结。</p>
-
-
-                </div>
-                <div class="read-all">
-                    <a  href="/2018/08/11/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E5%B0%8F%E7%BB%93/"><i class="fa fa-newspaper-o"></i>Read All</a>
-                </div>
-                <hr>
-              </li>
-            
-              <li>
-                <h2>
-                  <a class="post-link" href="/2018/08/10/%E7%9F%A9%E9%98%B5%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E5%A5%87%E5%BC%82%E5%80%BC%E5%88%86%E8%A7%A3-PCA/">矩阵特征分解，奇异值分解，PCA</a>
-                </h2>
-                <div class="label">
-                    <div class="label-card">
-                        <i class="fa fa-calendar"></i>2018-08-10
-                    </div>
-                    <div class="label-card">
-                        <i class="fa fa-user"></i>HSH
-                        
-                    </div>
-                    <div class="label-card">
-                        
-                    </div>
-
-                    <div class="label-card">
-                    
-
-
-<!-- <span class="point">•</span> -->
-<span class="categories">
-  <i class="fa fa-th-list"></i>
-  
-    
-        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
-    
-  
-
-  <!-- <span class="point">•</span> -->
-</span>
-
-
-                    </div>
-
-                    <div class="label-card">
-                    
-<!-- <span class="point">•</span> -->
-<span class="pageTag">
-  <i class="fa fa-tags"></i>
-  
-    
-        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+        <a href="/tag/#Git" title="Tag: Git" rel="tag">Git</a>
     
   
 
@@ -487,7 +318,7 @@
 
                 </div>
                 <div class="read-all">
-                    <a  href="/2018/08/10/%E7%9F%A9%E9%98%B5%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E5%A5%87%E5%BC%82%E5%80%BC%E5%88%86%E8%A7%A3-PCA/"><i class="fa fa-newspaper-o"></i>Read All</a>
+                    <a  href="/2016/08/30/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><i class="fa fa-newspaper-o"></i>Read All</a>
                 </div>
                 <hr>
               </li>
@@ -500,12 +331,12 @@
         <div class="pagination">
           
             <a href="/index.html" class="previous"><i class="fa fa-angle-double-left"></i></a>
-            <a href="/" class="previous"><i class="fa fa-angle-left"></i></a>
+            <a href="/page6" class="previous"><i class="fa fa-angle-left"></i></a>
           
-          <span class="page_number ">2/7</span>
+          <span class="page_number ">7/7</span>
           
-            <a href="/page3" class="next"><i class="fa fa-angle-right"></i></a>
-            <a href="/page7" class="next"><i class="fa fa-angle-double-right"></i></a>
+            <span class="next disable"><i class="fa fa-angle-right"></i></span>
+            <span class="next disable"><i class="fa fa-angle-double-right"></i></span>
           
         </div>
     </div>
