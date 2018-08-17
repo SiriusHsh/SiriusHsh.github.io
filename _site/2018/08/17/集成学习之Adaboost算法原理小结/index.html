@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Ng机器学习--课程笔记（七）</title>
-    <meta name="description" content="  Evaluating a learning algorithm/Machine learning diagnosticEvaluating a learning algorithm/Machine learning diagnostic在机器学习中会遇到一些训练效果不好的情况，如何衡量算法的好坏，以及如何改进...">
+    <title>集成学习之Adaboost算法原理小结</title>
+    <meta name="description" content="在集成学习原理小结中，我们讲到了集成学习按照个体学习器之间是否存在依赖关系可以分为两类，第一个是个体学习器之间存在强依赖关系，另一类是个体学习器之间不存在强依赖关系。前者的代表算法就是是boosting系列算法。在boosting系列算法中， Adaboost是最著名的算法之一。Adaboost既可以用作分类，也...">
 
     <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="icon" href="/favicon.ico?" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2017/10/30/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0-%E4%B8%83/">
+    <link rel="canonical" href="http://localhost:4000/2018/08/17/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E4%B9%8BAdaboost%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">
     <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
 
 
@@ -131,11 +131,11 @@
 
         <div class="page clearfix" post>
     <div class="left">
-        <h1>Ng机器学习--课程笔记（七）</h1>
+        <h1>集成学习之Adaboost算法原理小结</h1>
         <div class="label">
 
             <div class="label-card">
-                <i class="fa fa-calendar"></i>2017-10-30
+                <i class="fa fa-calendar"></i>2018-08-17
             </div>
 
             <div class="label-card">
@@ -155,8 +155,6 @@
 <span class="categories">
   <i class="fa fa-th-list"></i>
   
-    
-        <a href="/category/#学习笔记" title="Category: 学习笔记" rel="category">学习笔记</a>&nbsp;
     
         <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
     
@@ -187,90 +185,8 @@
         </div>
         <hr>
         <article itemscope itemtype="http://schema.org/BlogPosting">
-        <ul id="markdown-toc">
-  <li><a href="#evaluating-a-learning-algorithmmachine-learning-diagnostic" id="markdown-toc-evaluating-a-learning-algorithmmachine-learning-diagnostic">Evaluating a learning algorithm/Machine learning diagnostic</a>    <ul>
-      <li><a href="#1评价假设函数" id="markdown-toc-1评价假设函数">1.评价假设函数</a></li>
-      <li><a href="#2模型选择" id="markdown-toc-2模型选择">2.模型选择</a></li>
-      <li><a href="#3偏差还是方差" id="markdown-toc-3偏差还是方差">3.偏差还是方差？</a></li>
-      <li><a href="#4学习曲线" id="markdown-toc-4学习曲线">4.学习曲线</a></li>
-      <li><a href="#5总结" id="markdown-toc-5总结">5.总结</a></li>
-    </ul>
-  </li>
-  <li><a href="#构造机器学习系统的一些建议" id="markdown-toc-构造机器学习系统的一些建议">构造机器学习系统的一些建议</a>    <ul>
-      <li><a href="#1error-analysis误差分析" id="markdown-toc-1error-analysis误差分析">1.error analysis（误差分析）</a></li>
-      <li><a href="#2skewed-classes偏斜类" id="markdown-toc-2skewed-classes偏斜类">2.skewed classes（偏斜类）</a>        <ul>
-          <li><a href="#对查准率和召回率的评判标准" id="markdown-toc-对查准率和召回率的评判标准">对查准率和召回率的评判标准</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-</ul>
+        <p>在<a href="http://www.cnblogs.com/pinard/p/6131423.html">集成学习原理小结</a>中，我们讲到了集成学习按照个体学习器之间是否存在依赖关系可以分为两类，第一个是个体学习器之间存在强依赖关系，另一类是个体学习器之间不存在强依赖关系。前者的代表算法就是是boosting系列算法。在boosting系列算法中， Adaboost是最著名的算法之一。Adaboost既可以用作分类，也可以用作回归。本文就对Adaboost算法做一个总结。</p>
 
-<h1 id="evaluating-a-learning-algorithmmachine-learning-diagnostic">Evaluating a learning algorithm/Machine learning diagnostic</h1>
-<p>在机器学习中会遇到一些训练效果不好的情况，如何衡量算法的好坏，以及如何改进，是很关键的问题。<br />
-Ng给出了如图所示的一些方法，但是总不能全试吧，浪费时间，于是提出了“诊断”的概念。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-1.png" alt="lesson7-1.png" /></p>
-
-<h2 id="1评价假设函数">1.评价假设函数</h2>
-<p>很传统的方法，将数据集73分，7成作为训练集，3成作为测试集。用训练集训练得到惩罚参数，带入到损失函数中，用测试集进行计算，得到损失总和。</p>
-<blockquote>
-  <p>对于线性回归：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-2.png" alt="lesson7-2.png" /></p>
-</blockquote>
-
-<blockquote>
-  <p>对于逻辑回归：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-5.png" alt="lesson7-5.png" /><br />
-或者
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-3.png" alt="lesson7-3.png" />   <br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-4.png" alt="lesson7-4.png" /></p>
-</blockquote>
-
-<h2 id="2模型选择">2.模型选择</h2>
-<p>假设函数应该用几次的多项式，什么是正确的特征，正则化参数$\lambda$如何选择？这些都是模型选择的问题。<br />
-道理很简单，为了避免做出测试集来进行模型选择这种事情，我们将数据集划分为三块，622分是经典的分割方法，6成作为训练集，2成作为验证集，2成作为测试集。拿验证集出来，对模型进行评估，选出效果最好的那个模型，然后用测试集对该模型进行测试。</p>
-
-<h2 id="3偏差还是方差">3.偏差还是方差？</h2>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-6.png" alt="lesson7-6.png" /><br />
-如图所示，左边框框处于欠拟合状态，此时$J_{train}(\theta)$ 和 $J_{CV}(\theta)$都很大，且两值接近。  右边框框处于过拟合状态，此时$J_{train}(\theta)$很小，$J_{CV}(\theta)$很大，两值差值很大。</p>
-
-<p>此时去考虑正则化参数$\lambda$，就很容易理解，当$\lambda$越大，越接近欠拟合。于是有了下图：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-7.png" alt="lesson7-7.png" /></p>
-
-<h2 id="4学习曲线">4.学习曲线</h2>
-<p>学习曲线可以很好的帮助我们判断，目前是处于高偏差还是高方差阶段。</p>
-<blockquote>
-  <p>高偏差  看似$J_{train}(\theta)$ 和 $J_{CV}(\theta)$很接近，但是然并软，无论数据量有多大，error永远处于比较大的阶段。  所以再增加数据量也是徒劳。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-8.png" alt="lesson7-8.png" /></p>
-</blockquote>
-
-<blockquote>
-  <p>高方差 看起来增加数据量还是有点用的。当数据量很大很大时，$J_{train}(\theta)$ 和 $J_{CV}(\theta)$会越来越接近，并且error趋于一个可接受的大下。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-9.png" alt="lesson7-9.png" /></p>
-</blockquote>
-
-<h2 id="5总结">5.总结</h2>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-10.png" alt="lesson7-10.png" /></p>
-
-<h1 id="构造机器学习系统的一些建议">构造机器学习系统的一些建议</h1>
-<h2 id="1error-analysis误差分析">1.error analysis（误差分析）</h2>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-14.png" alt="lesson7-14.png" /><br />
-感觉这个实现的流程很适合应用于kaggle这类机器学习比赛中。<br />
-误差分析，说白了就是人工去分析，拿垃圾邮件分类问题来说，去看看验证集中哪些邮件总是被分类错误，通过大量的统计，能够找到规律，然后可以去构造新的特征。</p>
-
-<p>研究下图这个实例
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-15.png" alt="lesson7-15.png" />  通过对错误样本的分析，从而更好的构造特征变量。
-Ng强调尽量保证在<strong>交叉验证集</strong>上做</p>
-
-<h2 id="2skewed-classes偏斜类">2.skewed classes（偏斜类）</h2>
-<p>有的时候正负样本严重倾斜，比如在癌症检测事件中，真实患有癌症的样例占了0.5%，我们通过机器学习算法，得到了99%的准确率，但是这也意味着有1%的错误率。当我们构建这样一种算法，它也已经称不上是机器学习算法了，它总是返回(y = 0)，即诊断所有人都没有患癌症，这种算法错误率居然只有0.5%。比我们辛辛苦苦构建的机器学习算法的准确率还高。这就是一种偏斜类的体现，对于这类样本，我们需要引进另外两种判断方法，即precision和recall (查准率)/(召回率)。<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-16.png" alt="lesson7-16.png" /><br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-17.png" alt="lesson7-17.png" /></p>
-
-<h3 id="对查准率和召回率的评判标准">对查准率和召回率的评判标准</h3>
-<p><img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-20.png" alt="lesson7-20.png" /> 通过对阈值的设置，能够在召回率和查准率之间进行抉择。当阈值很高时，能够获得很高的查准率，但是召回率就很低。<br />
-一种衡量标准是F值：<br />
-<img src="http://octtw77pk.bkt.clouddn.com//public/upload/lesson7-19.png" alt="lesson7-19.png" /></p>
 
         </article>
         <hr>
@@ -284,22 +200,6 @@ Ng强调尽量保证在<strong>交叉验证集</strong>上做</p>
                         
                         <h2 id="similar_posts">Similar Posts</h2>
                         <ul>
-                        
-                        <li class="relatedPost">
-                            <a href="/2018/08/17/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E4%B9%8BAdaboost%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">集成学习之Adaboost算法原理小结
-                            
-                            </a>
-                        </li>
-                        
-                        
-                    
-                
-            
-        
-            
-            
-                
-                    
                         
                         <li class="relatedPost">
                             <a href="/2018/08/17/Bagging%E4%B8%8E%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">Bagging与随机森林算法原理小结
@@ -380,6 +280,22 @@ Ng强调尽量保证在<strong>交叉验证集</strong>上做</p>
             
                 
                     
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA-%E4%B8%89-%E7%BA%BF%E6%80%A7%E4%B8%8D%E5%8F%AF%E5%88%86%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%E4%B8%8E%E6%A0%B8%E5%87%BD%E6%95%B0/">支持向量机（三）线性不可分支持向量机与核函数
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
                 
             
         
@@ -411,13 +327,11 @@ Ng强调尽量保证在<strong>交叉验证集</strong>上做</p>
         <div class="post-recent">
     <div class="pre">
         
-        <p><strong>上一篇</strong> <a href="/2017/10/26/Ng%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%BC%96%E7%A8%8B%E4%BD%9C%E4%B8%9A%E5%BF%83%E5%BE%97%E6%80%BB%E6%B1%87/">Ng机器学习--编程作业心得总汇</a></p>
+        <p><strong>上一篇</strong> <a href="/2018/08/17/Bagging%E4%B8%8E%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">Bagging与随机森林算法原理小结</a></p>
         
     </div>
     <div class="nex">
 
-        
-        <p><strong>下一篇</strong> <a href="/2018/03/10/Python%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Python数据结构</a></p>
         
     </div>
 </div>
