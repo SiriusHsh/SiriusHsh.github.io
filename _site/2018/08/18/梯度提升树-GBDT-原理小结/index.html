@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>梯度提升树（GBDT）原理小结</title>
+    <meta name="description" content="本文就对Boosting家族中另一个重要的算法梯度提升树(Gradient Boosting Decison Tree, 以下简称GBDT)做一个总结。GBDT有很多简称，有GBT（Gradient Boosting Tree）, GTB（Gradient Tree Boosting ）， GBRT（Gradie...">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="http://localhost:4000/2018/08/18/%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91-GBDT-%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">
+    <link rel="alternate" type="application/rss+xml" title="SiriusHsh" href="http://localhost:4000/feed.xml ">
+
+
+    <script>
+    // 百度统计代码
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?11d0a7524a357b826a143e592f616077;";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+    </script>
+
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">SiriusHsh</a>
+        <small>记录思考，整理人生</small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>梯度提升树（GBDT）原理小结</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-08-18
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>HSH
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+<!-- <span class="point">•</span> -->
+<span class="categories">
+  <i class="fa fa-th-list"></i>
+  
+    
+        <a href="/category/#机器学习" title="Category: 机器学习" rel="category">机器学习</a>
+    
+  
+
+  <!-- <span class="point">•</span> -->
+</span>
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+        <!--a href="/tag/#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0" title="Tag: 机器学习" rel="tag">机器学习</a-->
+        <a href="/tag/#机器学习" title="Tag: 机器学习" rel="tag">机器学习</a>
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <ul id="markdown-toc">
+  <li><a href="#1-gbdt概述" id="markdown-toc-1-gbdt概述">1. GBDT概述</a></li>
+  <li><a href="#2-gbdt的负梯度拟合" id="markdown-toc-2-gbdt的负梯度拟合">2. GBDT的负梯度拟合</a></li>
+  <li><a href="#3-gbdt回归算法" id="markdown-toc-3-gbdt回归算法">3. GBDT回归算法</a></li>
+  <li><a href="#4-gbdt分类算法" id="markdown-toc-4-gbdt分类算法">4. GBDT分类算法</a>    <ul>
+      <li><a href="#41-二元gbdt分类算法" id="markdown-toc-41-二元gbdt分类算法">4.1 二元GBDT分类算法</a></li>
+      <li><a href="#42-多元gbdt分类算法" id="markdown-toc-42-多元gbdt分类算法">4.2 多元GBDT分类算法</a></li>
+    </ul>
+  </li>
+  <li><a href="#5-gbdt常用损失函数" id="markdown-toc-5-gbdt常用损失函数">5. GBDT常用损失函数</a></li>
+  <li><a href="#6--gbdt的正则化" id="markdown-toc-6--gbdt的正则化">6.  GBDT的正则化</a></li>
+  <li><a href="#7-gbdt小结" id="markdown-toc-7-gbdt小结">7. GBDT小结</a></li>
+</ul>
+<p>本文就对Boosting家族中另一个重要的算法梯度提升树(Gradient Boosting Decison Tree, 以下简称GBDT)做一个总结。GBDT有很多简称，有GBT（Gradient Boosting Tree）, GTB（Gradient Tree Boosting ）， GBRT（Gradient Boosting Regression Tree）, MART(Multiple Additive Regression Tree)，其实都是指的同一种算法，本文统一简称GBDT。GBDT在BAT大厂中也有广泛的应用，假如要选择3个最重要的机器学习算法的话，个人认为GBDT应该占一席之地。</p>
+
+<h2 id="1-gbdt概述">1. GBDT概述</h2>
+
+<p>GBDT也是集成学习Boosting家族的成员，但是却和传统的Adaboost有很大的不同。回顾下Adaboost，我们是利用前一轮迭代弱学习器的误差率来更新训练集的权重，这样一轮轮的迭代下去。GBDT也是迭代，使用了前向分布算法，但是弱学习器限定了只能使用CART回归树模型，同时迭代思路和Adaboost也有所不同。</p>
+
+<p>在GBDT的迭代中，假设我们前一轮迭代得到的强学习器是$f_{t-1}(x)$, 损失函数是$L(y, f_{t-1}(x))$, 我们本轮迭代的目标是找到一个CART回归树模型的弱学习器$h_t(x)$，让本轮的损失损失$L(y, f_{t}(x) =L(y, f_{t-1}(x)+ h_t(x))$最小。也就是说，本轮迭代找到决策树，要让样本的损失尽量变得更小。</p>
+
+<p>GBDT的思想可以用一个通俗的例子解释，假如有个人30岁，我们首先用20岁去拟合，发现损失有10岁，这时我们用6岁去拟合剩下的损失，发现差距还有4岁，第三轮我们用3岁拟合剩下的差距，差距就只有一岁了。如果我们的迭代轮数还没有完，可以继续迭代下面，每一轮迭代，拟合的岁数误差都会减小。</p>
+
+<p>从上面的例子看这个思想还是蛮简单的，但是有个问题是这个损失的拟合不好度量，损失函数各种各样，怎么找到一种通用的拟合方法呢？</p>
+
+<h2 id="2-gbdt的负梯度拟合">2. GBDT的负梯度拟合</h2>
+
+<p>在上一节中，我们介绍了GBDT的基本思路，但是没有解决损失函数拟合方法的问题。针对这个问题，大牛Freidman提出了用损失函数的负梯度来拟合本轮损失的近似值，进而拟合一个CART回归树。第t轮的第i个样本的损失函数的负梯度表示为</p>
+
+<script type="math/tex; mode=display">r_{ti} = -\bigg[\frac{\partial L(y_i, f(x_i)))}{\partial f(x_i)}\bigg]_{f(x) = f_{t-1}\;\; (x)}</script>
+
+<p>利用$(x_i,r_{ti})\;\; (i=1,2,..m)$,我们可以拟合一颗CART回归树，得到了第t颗回归树，其对应的叶节点区域$R_{tj}, j =1,2,…, J$。其中$J$为叶子节点的个数。</p>
+
+<p>针对每一个叶子节点里的样本，我们求出使损失函数最小，也就是拟合叶子节点最好的的输出值$c_{tj}$如下：</p>
+
+<script type="math/tex; mode=display">c_{tj} = \underbrace{arg\; min}_{c}\sum\limits_{x_i \in R_{tj}} L(y_i,f_{t-1}(x_i) +c)</script>
+
+<p>这样我们就得到了本轮的决策树拟合函数如下：</p>
+
+<script type="math/tex; mode=display">h_t(x) = \sum\limits_{j=1}^{J}c_{tj}I(x \in R_{tj})</script>
+
+<p>从而本轮最终得到的强学习器的表达式如下：</p>
+
+<script type="math/tex; mode=display">f_{t}(x) = f_{t-1}(x) + \sum\limits_{j=1}^{J}c_{tj}I(x \in R_{tj})</script>
+
+<p>通过损失函数的负梯度来拟合，我们找到了一种通用的拟合损失误差的办法，这样无轮是分类问题还是回归问题，我们通过其损失函数的负梯度的拟合，就可以用GBDT来解决我们的分类回归问题。区别仅仅在于损失函数不同导致的负梯度不同而已。</p>
+
+<h2 id="3-gbdt回归算法">3. GBDT回归算法</h2>
+
+<p>好了，有了上面的思路，下面我们总结下GBDT的回归算法。为什么没有加上分类算法一起？那是因为分类算法的输出是不连续的类别值，需要一些处理才能使用负梯度，我们在下一节讲。</p>
+
+<p>输入是训练集样本$T={(x_,y_1),(x_2,y_2), …(x_m,y_m)}$， 最大迭代次数T, 损失函数$L$。</p>
+
+<p>输出是强学习器$f(x)​$</p>
+
+<p>1) 初始化弱学习器</p>
+
+<script type="math/tex; mode=display">f_0(x) = \underbrace{arg\; min}_{c}\sum\limits_{i=1}^{m}L(y_i, c)</script>
+
+<p>2) 对迭代轮数$t=1,2,…T$有：</p>
+
+<p>​	a)对样本$i=1,2，…m$，计算负梯度</p>
+
+<script type="math/tex; mode=display">r_{ti} = -\bigg[\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\bigg]_{f(x) = f_{t-1}\;\; (x)}</script>
+
+<p>​	b)利用$(x_i,r_{ti})\;\; (i=1,2,..m)$, 拟合一颗CART回归树,得到第t颗回归树，其对应的叶子节点区域为$R_{tj}, j =1,2,…, J$。其中$J$为回归树t的叶子节点的个数。</p>
+
+<p>​	c) 对叶子区域$j =1,2,..J$,计算最佳拟合值</p>
+
+<script type="math/tex; mode=display">c_{tj} = \underbrace{arg\; min}_{c}\sum\limits_{x_i \in R_{tj}} L(y_i,f_{t-1}(x_i) +c)</script>
+
+<p>​	d) 更新强学习器</p>
+
+<script type="math/tex; mode=display">f_{t}(x) = f_{t-1}(x) + \sum\limits_{j=1}^{J}c_{tj}I(x \in R_{tj})</script>
+
+<p>3) 得到强学习器$f(x)$的表达式</p>
+
+<script type="math/tex; mode=display">f(x) = f_T(x) =f_0(x) + \sum\limits_{t=1}^{T}\sum\limits_{j=1}^{J}c_{tj}I(x \in R_{tj})</script>
+
+<h2 id="4-gbdt分类算法">4. GBDT分类算法</h2>
+
+<p>这里我们再看看GBDT分类算法，GBDT的分类算法从思想上和GBDT的回归算法没有区别，但是由于样本输出不是连续的值，而是离散的类别，导致我们无法直接从输出类别去拟合类别输出的误差。</p>
+
+<p>为了解决这个问题，主要有两个方法，一个是用指数损失函数，此时GBDT退化为Adaboost算法。另一种方法是用类似于逻辑回归的对数似然损失函数的方法。也就是说，我们用的是类别的预测概率值和真实概率值的差来拟合损失。本文仅讨论用对数似然损失函数的GBDT分类。而对于对数似然损失函数，我们又有二元分类和多元分类的区别。</p>
+
+<h3 id="41-二元gbdt分类算法">4.1 二元GBDT分类算法</h3>
+
+<p>对于二元GBDT，如果用类似于逻辑回归的对数似然损失函数，则损失函数为：</p>
+
+<script type="math/tex; mode=display">L(y, f(x)) = log(1+ exp(-yf(x)))</script>
+
+<p>其中$y \in\{-1, +1\}$。则此时的负梯度误差为</p>
+
+<script type="math/tex; mode=display">r_{ti} = -\bigg[\frac{\partial L(y, f(x_i))}{\partial f(x_i)}\bigg]_{f(x) = f_{t-1}\;\; (x)} = y_i/(1+exp(y_if(x_i)))</script>
+
+<p>对于生成的决策树，我们各个叶子节点的最佳残差拟合值为</p>
+
+<script type="math/tex; mode=display">c_{tj} = \underbrace{arg\; min}_{c}\sum\limits_{x_i \in R_{tj}} log(1+exp(-y_i(f_{t-1}(x_i) +c)))</script>
+
+<p>由于上式比较难优化，我们一般使用近似值代替</p>
+
+<script type="math/tex; mode=display">c_{tj} = \sum\limits_{x_i \in R_{tj}}r_{ti}\bigg /  \sum\limits_{x_i \in R_{tj}}|r_{ti}|(1-|r_{ti}|)</script>
+
+<p>除了负梯度计算和叶子节点的最佳残差拟合的线性搜索，二元GBDT分类和GBDT回归算法过程相同。</p>
+
+<h3 id="42-多元gbdt分类算法">4.2 多元GBDT分类算法</h3>
+
+<p>多元GBDT要比二元GBDT复杂一些，对应的是多元逻辑回归和二元逻辑回归的复杂度差别。假设类别数为K，则此时我们的对数似然损失函数为：</p>
+
+<script type="math/tex; mode=display">L(y, f(x)) = -  \sum\limits_{k=1}^{K}y_klog\;p_k(x)</script>
+
+<p>其中如果样本输出类别为$k$，则$y_k=1$。第$k$类的概率$p_k(x)$的表达式为：</p>
+
+<script type="math/tex; mode=display">p_k(x) = exp(f_k(x)) \bigg / \sum\limits_{l=1}^{K} exp(f_l(x))</script>
+
+<p>集合上两式，我们可以计算出第$t$轮的第$i$个样本对应类别$l$的负梯度误差为</p>
+
+<script type="math/tex; mode=display">r_{til} = -\bigg[\frac{\partial L(y_i, f(x_i)))}{\partial f(x_i)}\bigg]_{f_k(x) = f_{l, t-1}\;\; (x)} = y_{il} - p_{l, t-1}(x_i)</script>
+
+<p>观察上式可以看出，其实这里的误差就是样本i对应类别l的真实概率和$t-1$轮预测概率的差值。</p>
+
+<p>对于生成的决策树，我们各个叶子节点的最佳残差拟合值为</p>
+
+<script type="math/tex; mode=display">c_{tjl} = \underbrace{arg\; min}_{c_{jl}}\sum\limits_{i=0}^{m}\sum\limits_{k=1}^{K} L(y_k, f_{t-1, l}(x) + \sum\limits_{j=0}^{J}c_{jl} I(x_i \in R_{tj}))</script>
+
+<p>由于上式比较难优化，我们一般使用近似值代替</p>
+
+<script type="math/tex; mode=display">c_{tjl} =  \frac{K-1}{K} \; \frac{\sum\limits_{x_i \in R_{tjl}}r_{til}}{\sum\limits_{x_i \in R_{til}}|r_{til}|(1-|r_{til}|)}</script>
+
+<p>除了负梯度计算和叶子节点的最佳残差拟合的线性搜索，多元GBDT分类和二元GBDT分类以及GBDT回归算法过程相同。</p>
+
+<h2 id="5-gbdt常用损失函数">5. GBDT常用损失函数</h2>
+
+<p>这里我们再对常用的GBDT损失函数做一个总结。</p>
+
+<ul>
+  <li>对于分类算法，其损失函数一般有对数损失函数和指数损失函数两种:</li>
+</ul>
+
+<p>a) 如果是指数损失函数，则损失函数表达式为</p>
+
+<script type="math/tex; mode=display">L(y, f(x)) = exp(-yf(x))</script>
+
+<p>其负梯度计算和叶子节点的最佳残差拟合参见Adaboost原理篇。</p>
+
+<p>b) 如果是对数损失函数，分为二元分类和多元分类两种，参见4.1节和4.2节。</p>
+
+<ul>
+  <li>对于回归算法，常用损失函数有如下4种:</li>
+</ul>
+
+<p>a)均方差，这个是最常见的回归损失函数了</p>
+
+<script type="math/tex; mode=display">L(y, f(x)) =(y-f(x))^2</script>
+
+<p>b)绝对损失，这个损失函数也很常见</p>
+
+<script type="math/tex; mode=display">L(y, f(x)) =|y-f(x)|</script>
+
+<p>对应负梯度误差为：</p>
+
+<script type="math/tex; mode=display">sign(y_i-f(x_i))</script>
+
+<p>c)Huber损失，它是均方差和绝对损失的折衷产物，对于远离中心的异常点，采用绝对损失，而中心附近的点采用均方差。这个界限一般用分位数点度量。损失函数如下：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+L(y, f(x))= \begin{cases} \frac{1}{2}(y-f(x))^2& {|y-f(x)| \leq \delta}\\ \delta(|y-f(x)| - \frac{\delta}{2})& {|y-f(x)| > \delta} \end{cases} %]]></script>
+
+<p>对应的负梯度误差为：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+r(y_i, f(x_i))= \begin{cases} y_i-f(x_i)& {|y_i-f(x_i)| \leq \delta}\\ \delta sign(y_i-f(x_i))& {|y_i-f(x_i)| > \delta} \end{cases} %]]></script>
+
+<p>d) 分位数损失。它对应的是分位数回归的损失函数，表达式为</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+L(y, f(x)) =\sum\limits_{y \geq f(x)}\theta|y - f(x)| + \sum\limits_{y < f(x)}(1-\theta)|y - f(x)| %]]></script>
+
+<p>其中$\theta$为分位数，需要我们在回归前指定。对应的负梯度误差为：</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+r(y_i, f(x_i))= \begin{cases} \theta& { y_i \geq f(x_i)}\\ \theta - 1 & {y_i < f(x_i) } \end{cases} %]]></script>
+
+<p>对于Huber损失和分位数损失，主要用于健壮回归，也就是减少异常点对损失函数的影响。</p>
+
+<h2 id="6--gbdt的正则化">6.  GBDT的正则化</h2>
+
+<p>和Adaboost一样，我们也需要对GBDT进行正则化，防止过拟合。GBDT的正则化主要有三种方式。</p>
+
+<p>第一种是和Adaboost类似的正则化项，即步长(learning rate)。定义为$\nu$,对于前面的弱学习器的迭代</p>
+
+<script type="math/tex; mode=display">f_{k}(x) = f_{k-1}(x) + h_k(x)</script>
+
+<p>如果我们加上了正则化项，则有</p>
+
+<script type="math/tex; mode=display">f_{k}(x) = f_{k-1}(x) + \nu h_k(x)</script>
+
+<p>$\nu$的取值范围为$0 &lt; \nu \leq 1$。对于同样的训练集学习效果，较小的$\nu$意味着我们需要更多的弱学习器的迭代次数。通常我们用步长和迭代最大次数一起来决定算法的拟合效果。</p>
+
+<p>第二种正则化的方式是通过子采样比例（subsample）。取值为$(0,1]$。注意这里的子采样和随机森林不一样，随机森林使用的是放回抽样，而这里是不放回抽样。如果取值为1，则全部样本都使用，等于没有使用子采样。如果取值小于1，则只有一部分样本会去做GBDT的决策树拟合。选择小于1的比例可以减少方差，即防止过拟合，但是会增加样本拟合的偏差，因此取值不能太低。推荐在$[0.5, 0.8]$之间。</p>
+
+<p>使用了子采样的GBDT有时也称作随机梯度提升树(Stochastic Gradient Boosting Tree, SGBT)。由于使用了子采样，程序可以通过采样分发到不同的任务去做boosting的迭代过程，最后形成新树，从而减少弱学习器难以并行学习的弱点。</p>
+
+<p>第三种是对于弱学习器即CART回归树进行正则化剪枝。在决策树原理篇里我们已经讲过，这里就不重复了。</p>
+
+<h2 id="7-gbdt小结">7. GBDT小结</h2>
+
+<p>GBDT终于讲完了，GDBT本身并不复杂，不过要吃透的话需要对集成学习的原理，决策树原理和各种损失函树有一定的了解。由于GBDT的卓越性能，只要是研究机器学习都应该掌握这个算法，包括背后的原理和应用调参方法。目前GBDT的算法比较好的库是xgboost。当然scikit-learn也可以。</p>
+
+<p>最后总结下GBDT的优缺点。</p>
+
+<p>GBDT主要的优点有：</p>
+
+<ol>
+  <li>可以灵活处理各种类型的数据，包括连续值和离散值。</li>
+  <li>在相对少的调参时间情况下，预测的准备率也可以比较高。这个是相对SVM来说的。</li>
+  <li>使用一些健壮的损失函数，对异常值的鲁棒性非常强。比如 Huber损失函数和Quantile损失函数。</li>
+</ol>
+
+<p>GBDT的主要缺点有：</p>
+
+<ol>
+  <li>由于弱学习器之间存在依赖关系，难以并行训练数据。不过可以通过自采样的SGBT来达到部分并行。</li>
+</ol>
+
+<hr />
+
+<p>参考文献：https://www.cnblogs.com/pinard/p/6140514.html</p>
+
+        </article>
+        <hr>
+
+        
+        
+            
+            
+                
+                    
+                        
+                        <h2 id="similar_posts">Similar Posts</h2>
+                        <ul>
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/17/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E4%B9%8BAdaboost%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">集成学习之AdaBoost算法原理小结
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/17/Bagging%E4%B8%8E%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">Bagging与随机森林算法原理小结
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/17/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">集成学习原理小结
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8B/">决策树算法原理（下）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/%E5%86%B3%E7%AD%96%E6%A0%91%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-%E4%B8%8A/">决策树算法原理（上）
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                        
+                        <li class="relatedPost">
+                            <a href="/2018/08/15/SMO%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/">SMO算法原理
+                            
+                            </a>
+                        </li>
+                        
+                        
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+            
+            
+                
+                    
+                
+            
+        
+        
+            </ul>
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/08/17/%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0%E4%B9%8BAdaboost%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86%E5%B0%8F%E7%BB%93/">集成学习之AdaBoost算法原理小结</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#similar_posts">Similar Posts</a></li>
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+             本站记录我在学习生活的点点滴滴。 
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/SiriusHsh" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:siriushsh@foxmail.com" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>   
+            <a href="https://www.zhihu.com/people/SiriusHsh" title="Zhihu"><i class="iconfont icon-daoruzhihu"></i></a>      
+        </p>
+        <p>
+            本站总访问量<span id="busuanzi_value_site_pv"></span>次，本站访客数<span id="busuanzi_value_site_uv"></span>人次，本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>
