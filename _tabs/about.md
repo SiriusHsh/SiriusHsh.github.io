@@ -4,5 +4,15 @@ icon: fas fa-info-circle
 order: 4
 ---
 
+> 时间线：
 
-> **Note**: Add Markdown syntax content to file `_tabs/about.md` and it will show up on this page.
+- 2021年10月，第二次参加公司CTF，一年过去了基本没啥长进。。。
+
+- 2020年10月，公司CTF比赛，第一次接触CTF
+
+- 2019.7月，入职华为，从事安全工程师
+
+- 2017月9月，入学哈尔滨工业大学，研究机器学习、推荐系统
+
+- 2013年9月，入学哈尔滨工程大学，信息安全专业
+
