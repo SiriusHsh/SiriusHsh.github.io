@@ -1,14 +1,9 @@
 ---
-layout: post
 title:  Python模块之feedparser学习
 categories: 学习笔记
 tags: Python
-author: HSH
-mathjax: true
 ---
 
-* content
-{:toc}
 
 
 

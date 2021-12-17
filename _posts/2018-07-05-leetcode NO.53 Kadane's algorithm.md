@@ -1,17 +1,8 @@
 ---
-layout: post
 title: leetcode NO.53 Kadane's algorithm
-categories: 刷题
-tags: LeetCode Python
-author: HSH
-mathjax: true
+categories: 学习笔记
+tags: Python
 ---
-
-* content
-{:toc}
-
-
-
 
 
 

@@ -1,17 +1,8 @@
 ---
-layout: post
 title:  Python iter操作
 categories: 学习笔记
 tags: Python
-author: HSH
-mathjax: true
 ---
-
-* content
-{:toc}
-
-
-
 
 
 
