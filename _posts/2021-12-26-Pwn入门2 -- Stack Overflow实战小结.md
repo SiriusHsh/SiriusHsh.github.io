@@ -18,19 +18,99 @@ typora-copy-images-to: ../assets/img/2022
 
 
 
-#  NTUSTISC Lab
+#  #1 NTUSTISC Lab
+
+Lab0 的 pwntools上手题
+
+![image-20211227225123600](/assets/img/2022/image-20211227225123600.png)
 
 ## 0x01 Return to Text 
 
 ### Lab1
 
-123213
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void y0u_c4n7_533_m3()
+{
+  execve("/bin/sh", (char *[]){0}, (char *[]){0});
+}
+
+int main()
+{
+  char buf[16];
+  puts("This is your first bof challenge ;)");
+  fflush(stdout);
+  read(0, buf, 0x30);
+  return 0;
+}
+```
+
+
+
+![image-20211227225905877](/assets/img/2022/image-20211227225905877.png)
+
+> 没有栈保护，代码15行读取0x30字节，buffer overflow，覆盖返回地址为y0u_c4n7_533_m3()函数地址即可。
+>
+> `objdump -d bof`:
+>
+> ![image-20211227232815402](/assets/img/2022/image-20211227232815402.png)
+
+
+
+![image-20211227230813864](/assets/img/2022/image-20211227230813864.png)
 
 
 
 ### Lab2
 
-12312
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+void y0u_c4n7_533_m3()
+{
+  int allow = 0;
+  if (allow) {
+    execve("/bin/sh", 0, 0);
+  }
+  else {
+    puts("Oh no~~~!");
+    exit(0);
+  }
+}
+
+int main()
+{
+  char buf[16];
+  puts("This is your second bof challenge ;)");
+  fflush(stdout);
+  read(0, buf, 0x30);
+  if (strlen(buf) >= 16) {
+    puts("Bye bye~~");
+    exit(0);
+  }
+  return 0;
+}
+```
+
+
+![image-20211227233212607](/assets/img/2022/image-20211227233212607.png)
+
+> 和第一个基本一样，控制程序执行流return到`execve("/bin/sh", 0, 0);`这一行即可。
+>
+> 第24行的bypass：strlen判断结束为接收到'\0'位置，所以直接传`\x00`就可以bypass
+
+![image-20211227235502065](/assets/img/2022/image-20211227235502065.png)
+
+![image-20211228000202164](/assets/img/2022/image-20211228000202164.png){: .normal}
+
+strlen 精准bypass，但是没必要。直接全传`\x00`不香🐴  ，都不用算长度
+
 
 ## 0x02 Return to Shellcode
 
@@ -66,7 +146,7 @@ typora-copy-images-to: ../assets/img/2022
 
 
 
-#  CTF wiki
+#  #2 CTF wiki
 
 ## 0x01 基本ROP
 
