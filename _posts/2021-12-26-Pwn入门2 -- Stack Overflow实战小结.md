@@ -16,17 +16,15 @@ typora-copy-images-to: ../assets/img/2022
 
 
 
-
-
-#  #1 NTUSTISC Lab
+## NTUSTISC Lab
 
 Lab0 的 pwntools上手题
 
 ![image-20211227225123600](/assets/img/2022/image-20211227225123600.png)
 
-## 0x01 Return to Text 
+## Return to Text 
 
-### Lab1
+### # Lab1
 
 ```c
 #include <stdio.h>
@@ -64,7 +62,7 @@ int main()
 
 
 
-### Lab2
+### # Lab2
 
 ```c
 #include <stdio.h>
@@ -112,9 +110,9 @@ int main()
 strlen 精准bypass，但是没必要。直接全传`\x00`不香🐴  ，都不用算长度
 
 
-## 0x02 Return to Shellcode
+## Return to Shellcode
 
-### Lab3
+### # Lab3
 
 ```c
 #include <stdio.h>
@@ -138,7 +136,7 @@ int main()
 
 ![image-20211228211845743](/assets/img/2022/image-20211228211845743.png)
 
-> https://siriushsh.github.io/posts/Pwn%E5%85%A5%E9%97%A81-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#return-to-shellcode
+> 知识点导航：https://siriushsh.github.io/posts/Pwn%E5%85%A5%E9%97%A81-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#return-to-shellcode
 >
 > 没有开NX，所以可以向message中写入shellcode，并且在第15行控制程序执行流跳转到message处，执行shellcode
 
@@ -161,6 +159,12 @@ https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md
 > 0x68732f6e69622f这个数字就是"/bin/sh"的小端序表示，放进内存后计算机读取时就是/bin/sh，这个数字可以这么获得：
 >
 > ![image-20211228223842892](/assets/img/2022/image-20211228223842892.png){: .normal}
+>
+> 小端序就是 数据的低位存储在内存的低位
+>
+> ![image-20220101223657197](/assets/img/2022/image-20220101223657197.png){: .normal}
+>
+> 
 
 ![image-20211228221521394](/assets/img/2022/image-20211228221521394.png)
 
@@ -198,49 +202,63 @@ r.send(p)
 r.interactive()
 ```
 
-## 0x03 GOT Hijacking
-
-### Lab4
 
 
+在做题时想到的一个问题，为什么不能直接用`mov rdi,0x68732f6e69622f ` ，给rdi直接赋值呢，下面这段shellcode实际并不会拿到shell。
 
-## 0x04 ROP base
+![image-20211229203010746](/assets/img/2022/image-20211229203010746.png)
 
-### Lab5
+原因其实也很简单，因为原先rdi等于0，给他附上0x68732f6e69622f后，实际这个是地址的值
 
+![image-20220101221503781](/assets/img/2022/image-20220101221503781.png)
 
+再对比下正确的方式，注意看`x/gx $rdi 和 x/s $rdi`, 通过取$rdi地址上存储的数据，得到`/bin/sh`
 
-## 0x05 Return to PLT
+![image-20220101223133449](/assets/img/2022/image-20220101223133449.png){: .normal}
 
-### Lab6
+## GOT Hijacking
 
-
-
-## 0x06 Return to libc
-
-### Lab7
+### # Lab4
 
 
 
+## ROP base
+
+### # Lab5
+
+
+
+## Return to PLT
+
+### # Lab6
+
+
+
+## Return to libc
+
+### # Lab7
 
 
 
 
-#  #2 CTF wiki
-
-## 0x01 基本ROP
-
-### ret2text
 
 
 
-### ret2shellcode
+##  CTF wiki
+
+## 基本ROP
+
+### # ret2text
 
 
 
-## 0x02 中级ROP
+### # ret2shellcode
 
 
 
-## 0x03 高级ROP
+## 中级ROP
+
+
+
+## 高级ROP
 
