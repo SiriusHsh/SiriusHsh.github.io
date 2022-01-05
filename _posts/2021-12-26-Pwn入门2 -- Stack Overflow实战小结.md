@@ -392,6 +392,16 @@ int main()
 >
 > 调用system前的ret是为了对齐字节，不加无法拿到shell
 >
+> https://blog.csdn.net/qq_41560595/article/details/112161243
+>
+> https://www.cxymm.net/article/qq_29328443/107232025 
+>
+> ![image-20220104234713268](/assets/img/2022/image-20220104234713268.png)
+>
+> 运行到这里时，正常的栈：
+>
+> ![image-20220104234910264](/assets/img/2022/image-20220104234910264.png)
+>
 > XMM register 128bit，stack需要对齐0x10， stack是0x08 会crash。 return会对齐stack
 
 ![image-20220104224917123](/assets/img/2022/image-20220104224917123.png)
