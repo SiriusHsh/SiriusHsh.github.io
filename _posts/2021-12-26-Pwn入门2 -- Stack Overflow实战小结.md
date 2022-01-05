@@ -390,19 +390,23 @@ int main()
 >
 > ![image-20220104222505460](/assets/img/2022/image-20220104222505460.png)
 >
-> 调用system前的ret是为了对齐字节，不加无法拿到shell
+> 调用system前的ret是为了栈平衡，保持栈的16字节对齐。
 >
-> https://blog.csdn.net/qq_41560595/article/details/112161243
+> **若没有ret：**
 >
-> https://www.cxymm.net/article/qq_29328443/107232025 
+> ![image-20220105214451587](/assets/img/2022/image-20220105214451587.png)
 >
-> ![image-20220104234713268](/assets/img/2022/image-20220104234713268.png)
+> 注意此时rsp最后一位是0x8，并没有16字节对齐。16字节对齐就是 `rsp`指针必须为16的倍数，对应16进制，最后一位应该是0。
 >
-> 运行到这里时，正常的栈：
+> 需要对齐16字节的原因：![image-20220105214759353](/assets/img/2022/image-20220105214759353.png){: .normal}
 >
-> ![image-20220104234910264](/assets/img/2022/image-20220104234910264.png)
+> 看下去，在这一步之后`ni`，程序就SIGSEGV了。booom~![image-20220105214912957](/assets/img/2022/image-20220105214912957.png)
 >
-> XMM register 128bit，stack需要对齐0x10， stack是0x08 会crash。 return会对齐stack
+> **有ret的情况，是stack是16字节对齐的，程序也就不会崩了**
+>
+> ![image-20220105215058372](/assets/img/2022/image-20220105215058372.png)
+>
+> 知识补充参考：https://www.cxymm.net/article/qq_29328443/107232025 
 
 ![image-20220104224917123](/assets/img/2022/image-20220104224917123.png)
 
