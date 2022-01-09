@@ -73,7 +73,7 @@ google_analytics:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode:   # [light|dark]
+theme_mode: # [light|dark]
 
 # The CDN endpoint for images.
 # Notice that once it is assigned, the CDN url
@@ -89,14 +89,14 @@ avatar: 'assets/img/favicons/avatar.JPG'
 toc: true
 
 comments:
-  active: 'disqus'        # The global switch for posts comments, e.g., 'disqus'.  Keep it empty means disable
+  active: 'utterances'        # The global switch for posts comments, e.g., 'disqus'.  Keep it empty means disable
   # The active options are as follows:
   disqus: 
     shortname:  'siriushsh'  # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
-    repo:         # <gh-username>/<repo>
-    issue_term:   # < url | pathname | title | ...>
+    repo:  "SiriusHsh/SiriusHsh.github.io"       # <gh-username>/<repo>
+    issue_term: "title"  # < url | pathname | title | ...>
 paginate: 10
 
 # ------------ The following options are not recommended to be modified ------------------
