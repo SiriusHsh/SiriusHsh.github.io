@@ -1,5 +1,5 @@
 ---
-title: Pwn入门(1):基础知识
+title: Pwn入门 - Part I: Stack基础知识
 date: 2021-12-26 11:04:00 +0800
 author: sirius
 categories: [CTF]
@@ -104,6 +104,12 @@ https://www.ired.team/miscellaneous-reversing-forensics/windows-kernel-internals
 ![image-20211226124814754](/assets/img/2022/image-20211226124814754.png){: .normal}
 
 ![image-20211226124832066](/assets/img/2022/image-20211226124832066.png){: .normal}
+
+> 穿插一句，canary的值可以通过 pwngdb插件的`tls`命令获得
+>
+> ![image-20220110215656956](/assets/img/2022/image-20220110215656956.png)
+>
+> ![image-20220110215734695](/assets/img/2022/image-20220110215734695.png)
 
 ### DEP
 

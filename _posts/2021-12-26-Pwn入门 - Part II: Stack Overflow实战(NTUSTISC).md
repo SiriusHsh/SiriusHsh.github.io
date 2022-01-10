@@ -1,5 +1,5 @@
 ---
-title: Pwn入门(2):Stack Overflow实战小结
+title: Pwn入门 - Part II: Stack Overflow实战(NTUSTISC)
 date: 2021-12-26 14:09:00 +0800
 author: sirius
 categories: [CTF]
@@ -660,24 +660,4 @@ r.interactive()
 ```
 
 
-
-
-
-##  CTF wiki
-
-## 基本ROP
-
-### # ret2text
-
-
-
-### # ret2shellcode
-
-
-
-## 中级ROP
-
-
-
-## 高级ROP
 
