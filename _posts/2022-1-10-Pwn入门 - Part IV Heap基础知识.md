@@ -1,6 +1,6 @@
 ---
-title: Pwn入门 - Part IV: Heap基础知识
-date: 2021-1-9 14:09:00 +0800
+title: Pwn入门 - Part IV Heap基础知识
+date: 2022-1-10 14:09:00 +0800
 author: sirius
 categories: [CTF]
 tags: [CTF, pwn]
@@ -27,10 +27,6 @@ pwngdb插件命令：
 
 
 ```
-
-
-
-
 
 ## ptmalloc
 

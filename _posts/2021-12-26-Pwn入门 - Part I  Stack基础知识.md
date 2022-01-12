@@ -1,5 +1,5 @@
 ---
-title: Pwn入门 - Part I: Stack基础知识
+title: Pwn入门 - Part I Stack基础知识
 date: 2021-12-26 11:04:00 +0800
 author: sirius
 categories: [CTF]

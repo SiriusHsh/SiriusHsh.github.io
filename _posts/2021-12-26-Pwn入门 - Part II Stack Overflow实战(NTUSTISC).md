@@ -1,5 +1,5 @@
 ---
-title: Pwn入门 - Part II: Stack Overflow实战(NTUSTISC)
+title: Pwn入门 - Part II Stack Overflow实战(NTUSTISC)
 date: 2021-12-26 14:09:00 +0800
 author: sirius
 categories: [CTF]
