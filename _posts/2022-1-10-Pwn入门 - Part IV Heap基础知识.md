@@ -24,8 +24,6 @@ pwngdb插件命令：
 - heapinfo: 查看bins的链表
 - parseheap: 查看chunk
 - tls: 查看canary
-
-
 ```
 
 ## ptmalloc
@@ -50,7 +48,7 @@ chunk大小计算：
 
 ![image-20220110222240424](/assets/img/2022/image-20220110222240424.png)
 
-按照上述的计算方法：从0x30转变到0x40的转变点就是   `x+0x8+0xf = 0x40 => x = 0x29` , 也就是`malloc(0x29)`时
+按照上述的计算方法：从0x30转变到0x40的转变点就是 `x+0x8+0xf = 0x40 => x = 0x29` , 也就是`malloc(0x29)`时
 
 ![image-20220110222652232](/assets/img/2022/image-20220110222652232.png)
 
