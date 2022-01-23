@@ -19,12 +19,23 @@ typora-copy-images-to: ../assets/img/2022
 
 ## 一些命令记录
 
-```
+
 pwngdb插件命令：
 - heapinfo: 查看bins的链表
 - parseheap: 查看chunk
 - tls: 查看canary
-```
+
+
+
+查看got表
+
+`objdump -R xxx`
+
+`readelf  -a xxx | grep xxx`
+
+![image-20220123224618203](/assets/img/2022/image-20220123224618203.png){: .normal}
+
+
 
 
 
