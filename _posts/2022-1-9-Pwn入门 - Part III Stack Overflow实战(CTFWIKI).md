@@ -1,5 +1,5 @@
 ---
-sytitle: Pwn入门 - Part III Stack Overflow实战(CTFWIKI)
+title: Pwn入门 - Part III Stack Overflow实战(CTFWIKI)
 date: 2022-1-9 14:09:00 +0800
 author: sirius
 categories: [CTF]
