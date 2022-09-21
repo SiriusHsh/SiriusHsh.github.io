@@ -1,5 +1,5 @@
 ---
-title: ctfwiki-stackoverflow
+title: ctfwiki - stack overflow
 date: 2022-1-9 14:09:00 +0800
 author: sirius
 categories: [CTF, pwn]

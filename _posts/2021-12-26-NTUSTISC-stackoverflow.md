@@ -1,5 +1,5 @@
 ---
-title: NTUSTISC-stackoverflow
+title: NTUSTISC - stack overflow
 date: 2021-12-26 14:09:00 +0800
 author: sirius
 categories: [CTF, pwn]
