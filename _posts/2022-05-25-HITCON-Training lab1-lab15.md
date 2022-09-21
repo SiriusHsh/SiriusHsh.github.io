@@ -1,5 +1,5 @@
 ---
-title: Pwn(六) angelboy HITCON-Traning
+title: HITCON-Traning lab1-lab15
 date: 2022-7-26 23:05:00 +0800
 author: sirius
 categories: [CTF, pwn]

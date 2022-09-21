@@ -1,5 +1,5 @@
 ---
-title: Pwn(三) Stack Overflow实战(CTFWIKI)
+title: ctfwiki-stackoverflow
 date: 2022-1-9 14:09:00 +0800
 author: sirius
 categories: [CTF, pwn]
