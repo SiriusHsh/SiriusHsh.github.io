@@ -76,3 +76,38 @@ system("$0") == system("/bin/sh")
 system("aaaaaaaa")执行错误，不影响执行后续的system("sh")
 
 https://youtu.be/_ZnnGZygnzE?t=4522
+
+
+
+# 0x05 pwndbg中查看状态寄存器
+
+```bash
+i r eflags 查看状态寄存器
+```
+
+
+
+# 0x06 一些汇编指令
+
+1、test与jne、je搭配时，test判断两个操作数是否相同
+
+jne如果不相同则跳转
+
+je如果相同则跳转
+
+
+
+2、RAX = 高32位 + EAX
+
+EAX = 高16位 + AX
+
+AX = AH + AL
+
+
+
+
+
+
+
+
+
