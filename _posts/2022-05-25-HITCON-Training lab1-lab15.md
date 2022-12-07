@@ -153,7 +153,7 @@ r.interactive()
 
 一道很简单的ret2libc，但是一开始脑抽了，在libc中取got。。。还是基础不牢固呀![image-20220813111134045](/assets/img/2022/image-20220813111134045.png)
 
-取got和libc偏移，还是用pwntools取的写法更优雅一点。gdb里取，或者readelf strings等方法都可以拿到偏移，但就是地址硬编码了，看起来不是很自然。
+取got和libc偏移，还是用pwntools取的写法更优雅一点。gdb里取，或者readelf strings等方法都可以拿到偏移，但就是地址硬编码了，看起来不是很优雅。
 
 ```python
 from pwn import *
@@ -463,7 +463,13 @@ r.interactive()
 >
 >     ![image-20220831234915332](/assets/img/2022/image-20220831234915332.png)
 >
->     改的不是**0x7fffffffe130**，**0x7fffffffe130**是一个地址，是一个指针，修改的是**0x7fffffffe130**这个地址处的值，0x5555555547c0 -> 0x555555554708
+>     改的不是**0x7fffffffe130**这个值
+>     
+>     `stack_off -> pointer -> value`
+>     
+>     操纵这个指针来修改值
+>     
+>     0x5555555547**c0** -> 0x5555555547**08**
 >
 > - 可以配合%c来做写入
 >
