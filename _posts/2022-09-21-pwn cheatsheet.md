@@ -253,6 +253,8 @@ malloc.c中`malloc_consolidate`有以下几个调用点
 
 1、释放的chunk size大于`FASTBIN_CONSOLIDATION_THRESHOLD`。`FASTBIN_CONSOLIDATION_THRESHOLD`默认等于65536（0x10000）
 
+**释放的chunk size是已经prev/next chunk unlink合并完成后的size，当然合入top的情况也包括在内**
+
 - malloc_trim/mallopt/mallinfo
 
 1、使用`malloc_consolidate`初始化`av`
@@ -297,3 +299,99 @@ print(s)
 
 
 
+## 0x15 GDB调试技巧
+
+- gdb中快速调用glibc中的函数，如malloc和free，不用再修改C代码了
+
+```sh
+p $a=__malloc(0x20)
+p __free($a)
+```
+
+## 0x16 关于malloc，glibc设置的一些默认值
+
+```c
+#define DEFAULT_MXFAST     (64 * SIZE_SZ / 4)  64bit下等于0x80
+#define DEFAULT_TRIM_THRESHOLD (128 * 1024)
+#define DEFAULT_MMAP_THRESHOLD_MIN (128 * 1024)  等于0x20000
+#define DEFAULT_MMAP_THRESHOLD DEFAULT_MMAP_THRESHOLD_MIN
+#define DEFAULT_MMAP_MAX       (65536)
+
+top chunk，默认0x21000大小，也就是132KB
+Linux默认页大小4kb，0x1000
+```
+
+
+
+## 0x17 mmap多少的内存可以实现mmap-libc挨着的布局
+
+```sh
+pwndbg> vmmap
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+    0x555555554000     0x555555555000 r-xp     1000 0      /home/sirius/ctf/file_structure/WannaHeap/test
+    0x555555754000     0x555555755000 r--p     1000 0      /home/sirius/ctf/file_structure/WannaHeap/test
+    0x555555755000     0x555555756000 rw-p     1000 1000   /home/sirius/ctf/file_structure/WannaHeap/test
+    0x555555756000     0x555555777000 rw-p    21000 0      [heap]
+    0x7ffff79e2000     0x7ffff7bc9000 r-xp   1e7000 0      /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff7bc9000     0x7ffff7dc9000 ---p   200000 1e7000 /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff7dc9000     0x7ffff7dcd000 r--p     4000 1e7000 /lib/x86_64-linux-gnu/libc-2.27.so
+    0x7ffff7dcd000     0x7ffff7dcf000 rw-p     2000 1eb000 /lib/x86_64-linux-gnu/libc-2.27.so
+↓    0x7ffff7dcf000     0x7ffff7dd3000 rw-p     4000 0      [anon_7ffff7dcf]
+.    0x7ffff7dd3000     0x7ffff7dfc000 r-xp    29000 0      /lib/x86_64-linux-gnu/ld-2.27.so
+.    0x7ffff7fac000     0x7ffff7fdf000 rw-p    33000 0      [anon_7ffff7fac]
+.    0x7ffff7ff8000     0x7ffff7ffb000 r--p     3000 0      [vvar]
+.    0x7ffff7ffb000     0x7ffff7ffc000 r-xp     1000 0      [vdso]
+↑    0x7ffff7ffc000     0x7ffff7ffd000 r--p     1000 29000  /lib/x86_64-linux-gnu/ld-2.27.so
+    0x7ffff7ffd000     0x7ffff7ffe000 rw-p     1000 2a000  /lib/x86_64-linux-gnu/ld-2.27.so
+     0x7ffff7ffe000     0x7ffff7fff000 rw-p     1000 0      [anon_7ffff7ffe]
+    0x7ffffffde000     0x7ffffffff000 rw-p    21000 0      [stack]
+0xffffffffff600000 0xffffffffff601000 --xp     1000 0      [vsyscall]
+```
+
+上图指出了mmap的范围，那最大容纳的大小就是`0x7ffff7ffc000-0x7ffff7dfc000=0x200000`了，超过这个大小就只能放在heap之前了
+
+```
+0x7ffff780f000     0x7ffff7a10000 rw-p   201000 0      [anon_7ffff780f]  <=== mmap出来的
+0x7ffff7a10000     0x7ffff7bce000 r-xp   1be000 0      /home/sirius/glibc-all-in-one/libs/2.24-9ubuntu2.2_amd64/libc-2.24.so
+```
+
+
+
+## 0x18 setcontext这个gadget
+
+- 很强大，可以控制一大堆寄存器，ROP神器
+- 介绍参考：[pwn题堆利用的一些姿势 -- setcontext](https://blog.csdn.net/A951860555/article/details/118268484)
+
+>这里我们着重关注一下修改rsp和rcx寄存器的两行代码，mov rsp, [rdi+0xa0]和mov rcx, [rdi+0xa8]。修改rsp的值将会改变栈指针，因此我们就获得了控制栈的能力，修改rcx的值后接着有个push操作将rcx压栈，然后汇编指令按照顺序会执行截图中最后的retn操作，而retn的地址就是压入栈的rcx值，因此修改rcx就获得了控制程序流程的能力。
+>
+>这里程序流程可以解释如下：执行free或者malloc后跳转到setcontext+53，然后将rsp指针指向orw链，然后修改rcx的值为ret指令的地址，push rcx，至于其它寄存器的值此处可以不用在意，最后执行setcontext末尾后紧邻的retn，栈头出栈也还是ret指令，然后继续弹出，此时的rsp指向的地址正好是orw链的开头。
+
+- glibc2.28之前通过rdi调整寄存器，2.28及之后通过rdx调整寄存器
+  - 需要找到形如`mov rdx, qword ptr [rdi + 8] ; mov qword ptr [rsp], rax ; call qword ptr [rdx + 0x20]`的gadget
+  - 然后就可以继续使用setcontext了
+- 可以搭配mprotect使用，然后可以直接运行shellcode了
+  - [https://firmianay.gitbook.io/ctf-all-in-one/4_tips/4.11_mprotect](https://firmianay.gitbook.io/ctf-all-in-one/4_tips/4.11_mprotect)
+
+​	
+
+## 0x19 strdup
+
+`strdup(char *s) equal to  malloc(strlen(s) + 1)`
+
+e.g. 
+
+`strdup(0x17) -> malloc(0x18) -> chunksize: 0x20`
+
+`strdup(0x18) -> malloc(0x19) -> chunksize: 0x30`
+
+
+
+## 0x20 End of file [CTRL+D]
+
+- You can send string without ending it with a new line `\n` character using `CTRL+D` instead of `ENTER` .
+- It is useful if you want to send for example 16x`A` char in command line or using **GDB**.
+- It is possible as well with pwntools with`process.send("A"*16)` .
+
+
+
+ 
