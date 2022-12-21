@@ -407,7 +407,7 @@ e.g.
 ret2csu中有两个比较好用的gadget片段
 
 ```assembly
-.text:0000000000400600 loc_400600:                             ; CODE XREF: __libc_csu_init+54j
+.text:0000000000400600 loc_400600:                             ; CODE XREF: __libc_csu_init+54
 .text:0000000000400600                 mov     rdx, r13
 .text:0000000000400603                 mov     rsi, r14
 .text:0000000000400606                 mov     edi, r15d
@@ -416,7 +416,7 @@ ret2csu中有两个比较好用的gadget片段
 .text:0000000000400611                 cmp     rbx, rbp
 .text:0000000000400614                 jnz     short loc_400600
 .text:0000000000400616
-.text:0000000000400616 loc_400616:                             ; CODE XREF: __libc_csu_init+34j
+.text:0000000000400616 loc_400616:                             ; CODE XREF: __libc_csu_init+34
 .text:0000000000400616                 add     rsp, 8
 .text:000000000040061A                 pop     rbx
 .text:000000000040061B                 pop     rbp
