@@ -316,6 +316,22 @@ p $a=__malloc(0x20)
 p __free($a)
 ```
 
+- gdb源码调试
+
+1. 下载源码
+
+使用glibc-all-in-one里的build脚本，修改一下，把最后的编译步骤去掉。默认会下载到/glibc目录下
+
+2. gdb中设置glibc源码目录
+
+参考：[https://blog.csdn.net/albertsh/article/details/107437084](https://blog.csdn.net/albertsh/article/details/107437084)
+
+显示当前加载的目录：`show dir`
+
+设置glibc源码目录：`dir /glibc/2.33/source/malloc`
+
+建议一次多加几个常用目录：`dir /glibc/2.33/source/malloc:/glibc/2.33/source/stdio-common:/glibc/2.33/source/stdlib:/glibc/2.33/source/libio`
+
 ## 0x16 关于malloc，glibc设置的一些默认值
 
 ```c
@@ -406,7 +422,7 @@ e.g.
 
 ret2csu中有两个比较好用的gadget片段
 
-```assembly
+```shell
 .text:0000000000400600 loc_400600:                             ; CODE XREF: __libc_csu_init+54
 .text:0000000000400600                 mov     rdx, r13
 .text:0000000000400603                 mov     rsi, r14
@@ -517,6 +533,8 @@ payload += p64(mov_rax_0xf) + p64(syscall_ret) + flat(frame)
 
 - 必须确保**syscall** sigreturn时，rsp指向sigreturn frame的首地址
 - 有些情况是**call** sigreturn，因为会向栈中压入一个返回地址，所以整体会移动8字节，则构造的fake sigreturn frame从第8字节开始写`str(frame)[8:]`就可以解决了
+
+
 
 
 
